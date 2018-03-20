@@ -1,9 +1,11 @@
+##
+## Efnan GÜLKANAT, Sergen İSPİR
+
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import Imputer
 
-#Efnan GÜLKANAT, Sergen İSPİR
-grades= pd.read_csv('grade_sample.csv')
+grades= pd.read_csv('grade_sample.csv') ## read csv from file
 grades = grades.drop(grades[grades.Grade == 'S'].index) ##Remove vektor where grade is S
 grades = grades.drop(grades[grades.Grade == 'U'].index) ##Remove vektor where grade is U
 grades = grades.drop(grades[grades.Grade == 'W'].index) ##Remove vektor where grade is W
@@ -15,7 +17,7 @@ vector=result.pivot_table(values='Grade', index='StudID', columns='CourseCode', 
 students=pd.read_csv('student_sample.csv')
 students.sort_values("StudID", inplace=True)
 
-vector['GPA']=students['Avg'].values
+vector['GPA']=students['Avg'].values ## add graduation GPA column
 
 row,column=vector.shape
 for i in range(row):
@@ -43,6 +45,6 @@ for i in range(row):
 
 ## Preprocessing
 table = vector.values ## convert pandas DataFrame to Numpy ndarray
-imp = Imputer(missing_values='NaN', strategy='median', axis=0)
-imp.fit(table)
+imp = Imputer(missing_values='NaN', strategy='median', axis=0) 
+imp.fit(table) 
 table = imp.transform(table)
