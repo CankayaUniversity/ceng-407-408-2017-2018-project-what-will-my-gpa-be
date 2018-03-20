@@ -44,7 +44,7 @@ for i in range(row):
             vector.iloc[i,j]=np.nan
 
 ## Preprocessing
-table = vector.values ## convert pandas DataFrame to Numpy ndarray
+data = vector.values ## convert pandas DataFrame to Numpy ndarray
 imp = Imputer(missing_values='NaN', strategy='median', axis=0) 
-imp.fit(table) 
-table = imp.transform(table)
+imp.fit(data) 
+data = imp.transform(data) ## data holds necesserry data table
