@@ -14,7 +14,6 @@ table = table.replace([None,"AA","BA","BB","CB","CC","DC","DD","FD","FF"], [np.n
 
 
 ## Preprocessing: Convert NaN values to numeric values
-
 data = table.values ## convert pandas DataFrame to Numpy ndarray
 imp = Imputer(missing_values='NaN', strategy='most_frequent', axis=0) 
 imp.fit(data) 
