@@ -5,7 +5,12 @@ import numpy as np
 from sklearn.preprocessing import Imputer
 
 ## Functions
-def get_CourseGradeTable(grades):
+def get_courseGradeTable():
+    try:
+        grades = pd.read_csv('grade_sample.csv') ## read csv from file
+    except IOError:
+        print("CSV file does not exist!")
+        
     grades = grades.drop((grades[grades.Grade == 'S'] | grades[grades.Grade == 'U'] | grades[grades.Grade == 'W']).index)
     grades = grades.drop((grades[grades.CourseCode != 'CENG']).index)
     grades['CourseCode'] = grades['CourseCode'].apply(str)+ grades['CourseNum'].apply(str)
@@ -21,18 +26,12 @@ def get_CourseGradeTable(grades):
 
     return courseGradeData
 
-def get_DropoutTable(grades, students):
-    pass
-
-
-
-
-try:
-    grades = pd.read_csv('grade_sample.csv') ## read csv from file
-    students = pd.read_csv('student_sample.csv') 
-except IOError:
-    print("CSV file does not exist!")
-
-
-
+def get_dropoutTable():
+    try:
+        grades = pd.read_csv('grade_sample.csv') ## read csv from file
+        students = pd.read_csv('student_sample.csv') 
+    except IOError:
+        print("CSV file does not exist!")
+        
     
+
