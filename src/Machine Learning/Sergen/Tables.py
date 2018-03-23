@@ -20,15 +20,16 @@ except IOError:
 
 
 grades = grades.drop((grades[grades.Grade == 'S'] | grades[grades.Grade == 'U'] | grades[grades.Grade == 'W']).index)
-grades = grades.drop((grades[grades.CourseCode != 'CENG']).index)
+##grades = grades.drop((grades[grades.CourseCode != 'CENG']).index)
 grades['CourseCode'] = grades['CourseCode'].apply(str)+ grades['CourseNum'].apply(str)
 grades = grades.drop(columns=["CourseNum"])
-courseTable = grades.pivot_table(values='Grade', index='StudID', columns='CourseCode', aggfunc='first')
-courseTable = courseTable.replace([None,"AA","BA","BB","CB","CC","DC","DD","FD","FF"], [np.nan,4.0,3.5,3.0,2.5,2.0,1.5,1.0,0.5,0])
-dropoutTable = courseTable
-dropoutTable['Dropout'] = students["Leave"]
+table = grades.pivot_table(values='Grade', index='StudID', columns='CourseCode', aggfunc='first')
+table = table.replace([None,"AA","BA","BB","CB","CC","DC","DD","FD","FF"], [np.nan,4.0,3.5,3.0,2.5,2.0,1.5,1.0,0.5,0])
+##dropoutTable = table
+##dropoutTable['Dropout'] = students["Leave"]
 
-courseTable = convert_nan_to_numeric(courseTable)
+courseList = list(table.columns.values)
+courseTable = convert_nan_to_numeric(table)
 
 
 
