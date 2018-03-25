@@ -1,3 +1,4 @@
+
 ## Sergen ISPIR
 
 from Tables import *
@@ -19,7 +20,8 @@ def main():
             index = c.index(y[i])
             y[i] = index
 
-     
+    cgc.course_grade_logistic(x,y)
+    cgc.course_grade_MLP(x,y)
 
 if __name__ == "__main__":
     main()
