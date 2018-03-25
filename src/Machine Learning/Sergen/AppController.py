@@ -2,7 +2,8 @@
 ## Sergen ISPIR
 
 from Tables import *
-import CourseGradeController as cgc
+##import CourseGradeController as cgc
+import DropoutController as dc
 
 def main():
     
@@ -19,9 +20,7 @@ def main():
     for i in range(y.size):
             index = c.index(y[i])
             y[i] = index
-
-    cgc.course_grade_logistic(x,y)
-    cgc.course_grade_MLP(x,y)
+##    cgc.course_grade_logistic(x,y)
 
 if __name__ == "__main__":
     main()

@@ -1,11 +1,9 @@
 
 ## Sergen ISPIR
 
-from Tables import *
 from Logistic import *
 from ANN import *
 from sklearn.model_selection import KFold
-
 
 def course_grade_logistic(x,y):
                 
@@ -20,10 +18,11 @@ def course_grade_logistic(x,y):
         ##        print("TRAIN:", train_index, "TEST:", test_index)
                 X_train, X_test = x[train_index], x[test_index]
                 y_train, y_test = y[train_index], y[test_index]
-        lr = LogisticRegression(x, y)
+                
+        lr = LogisticRegression()
+        lr.setData(x,y)
         lr.train(tolerance,iteration,solv)
-        lr.getAccuracy()
-        lr.getLoss()
+        lr.getSummary()
 
 def course_grade_MLP(x,y):
         
@@ -40,3 +39,8 @@ def course_grade_MLP(x,y):
         mlp.train(activ,solv,alph,batch,l_rate_init,m_iter)
         mlp.getSummary()
 
+def course_grade_RNN(x,y):
+        pass
+
+def course_grade_SVM(x,y):
+        pass
