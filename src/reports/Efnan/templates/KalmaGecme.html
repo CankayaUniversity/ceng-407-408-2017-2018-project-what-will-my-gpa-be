@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>   
+  <meta charset="utf-8" />   
+  <title>Chart.js </title>      
+  <script src='static/Chart.min.js'></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+  <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="http://localhost:5000">Home Page</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <form class="form-inline my-2 my-lg-0">
+      <a class="nav-brand" href="http://localhost:5000">Back<span class="sr-only">(current)</span></a>
+    </form>
+  </div>
+</nav>
+</br>
+
+
+<select id="dropdown_list">
+  <option>Line</option>
+  <option>Graph</option>
+</select>
+
+<button class="btn btn-outline-success my-2 my-sm-0" onclick="myFunction()">Sign up</button>
+
+<h1 align="center">Course Success Year </h1><!-- bar chart canvas element -->
+</br>
+<div class="container">
+  <br />
+  <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+      <div id="id1" style="visibility: hidden;">
+      <canvas id="speedChart" width="400" height="200" style="position:absolute;"></canvas>
+    </div>
+      <div id="id2" style="visibility: hidden;">
+      <canvas id="densityChart" width="400" height="200" style="position:absolute;"></canvas>
+    </div>
+    </div>
+    <div class="col-md-1"></div>
+  </div>
+</div>
+
+<script>
+
+var speedCanvas = document.getElementById("speedChart");
+
+Chart.defaults.global.defaultFontFamily = "Lato";
+Chart.defaults.global.defaultFontSize = 18;
+
+var dataFirst = {
+    label: "Number of people which pass",
+    data : [{% for item in values1 %}
+                      {{item}},
+                    {% endfor %}],
+    lineTension: 0.3,
+    fill: false,
+    borderColor: 'red',
+    backgroundColor: 'transparent',
+    pointBorderColor: 'red',
+    pointBackgroundColor: 'lightgreen',
+    pointRadius: 5,
+    pointHoverRadius: 15,
+    pointHitRadius: 30,
+    pointBorderWidth: 2,
+    pointStyle: 'rect'
+  };
+
+var dataSecond = {
+    label: "Number of people which fail",
+    data : [{% for item in values %}
+                      {{item}},
+                    {% endfor %}],
+    lineTension: 0.3,
+    fill: false,
+    borderColor: 'purple',
+    backgroundColor: 'transparent',
+    pointBorderColor: 'purple',
+    pointBackgroundColor: 'lightgreen',
+    pointRadius: 5,
+    pointHoverRadius: 15,
+    pointHitRadius: 30,
+    pointBorderWidth: 2
+  };
+
+var speedData = {
+  labels: [{% for item in labels %}
+                  "{{item}}",
+              {% endfor %}],
+  datasets: [dataFirst, dataSecond]
+};
+
+var chartOptions = {
+  legend: {
+    display: true,
+    position: 'top',
+    labels: {
+      boxWidth: 80,
+      fontColor: 'black'
+    }
+  }
+};
+
+var lineChart = new Chart(speedCanvas, {
+  type: 'line',
+  data: speedData,
+  options: chartOptions
+});
+
+var densityCanvas = document.getElementById("densityChart");
+
+Chart.defaults.global.defaultFontFamily = "Lato";
+Chart.defaults.global.defaultFontSize = 18;
+
+var densityData = {
+  label: 'Number of people which fail',
+  data: [{% for item in values %}
+                      {{item}},
+                    {% endfor %}],
+  backgroundColor: 'rgba(0, 99, 132, 0.6)',
+  borderWidth: 0,
+  yAxisID: "y-axis-density"
+};
+
+var gravityData = {
+  label: 'Number of people which pass',
+   data : [{% for item in values1 %}
+                      {{item}},
+                    {% endfor %}],
+  backgroundColor: 'rgba(99, 132, 0, 0.6)',
+  borderWidth: 0,
+  yAxisID: "y-axis-gravity"
+};
+
+var planetData = {
+  labels: [{% for item in labels %}
+                  "{{item}}",
+              {% endfor %}],
+  datasets: [densityData, gravityData]
+};
+
+var chartOptions = {
+  scales: {
+    xAxes: [{
+      barPercentage: 1,
+      categoryPercentage: 0.6
+    }],
+    yAxes: [{
+      id: "y-axis-density"
+    }, {
+      id: "y-axis-gravity"
+    }]
+  }
+};
+
+var barChart = new Chart(densityCanvas, {
+  type: 'bar',
+  data: planetData,
+  options: chartOptions
+});
+
+
+ function myFunction() {
+    var select=document.getElementById("dropdown_list");
+    var x = document.getElementById("id1");
+    var y= document.getElementById("id2");
+   
+    if (select[select.selectedIndex].value=="Line") {
+        x.style.visibility='visible';
+        y.style.visibility='hidden';
+    } 
+    else if(select[select.selectedIndex].value=="Graph") {
+         y.style.visibility='visible';
+         x.style.visibility='hidden';
+    }
+}
+
+
+
+
+
+
+</script>
+
+
+
+</body>
+  </html>

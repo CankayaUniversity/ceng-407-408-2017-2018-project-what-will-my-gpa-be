@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>   
+  <meta charset="utf-8" />   
+  <title>Chart.js </title>      
+  <script src='static/Chart.min.js'></script>
+  <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="http://localhost:5000">Home Page</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <form class="form-inline my-2 my-lg-0">
+      <a class="nav-brand" href="http://localhost:5000">Back<span class="sr-only">(current)</span></a>
+    </form>
+  </div>
+</nav>
+</br>
+ <div class="row">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Graduation Distribution Year</h5>
+        <p class="card-text">How many people graduate previous years?</p>
+        <a href="{{ url_for('Raporlama') }}" class="btn btn-outline-success my-2 my-sm-0">Go Reports</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Course Success Year</h5>
+        <p class="card-text">Each course success rates</p>
+        <a href="{{ url_for('KursRaporlamaOnce') }}" class="btn btn-outline-success my-2 my-sm-0">Go Reports</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+<div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Dropout Year</h5>
+        <p class="card-text">Number of students which dropout our school</p>
+        <a a href="{{ url_for('KursBırakma') }}" class="btn btn-outline-success my-2 my-sm-0">Go Reports</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<div class="row">
+<div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Pass Fail Rate</h5>
+        <p class="card-text">Number of students which pass or fail one course</p>
+        <a a href="{{ url_for('KalmaGecmeOnce') }}" class="btn btn-outline-success my-2 my-sm-0">Go Reports</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">View Student Info</h5>
+        <p class="card-text">Number of students which pass or fail one course</p>
+        <a a href="{{ url_for('OgrencıRaporHome') }}" class="btn btn-outline-success my-2 my-sm-0">Go Reports</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="row">
+<div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Department Success Year</h5>
+        <p class="card-text">Department Success</p>
+        <a a href="{{ url_for('BolumOnce') }}" class="btn btn-outline-success my-2 my-sm-0">Go Reports</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Department Elective-Main Course Year</h5>
+        <p class="card-text">Department Success</p>
+        <a a href="{{ url_for('BolumSecmelıOnce') }}" class="btn btn-outline-success my-2 my-sm-0">Go Reports</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</body>
+</html>
