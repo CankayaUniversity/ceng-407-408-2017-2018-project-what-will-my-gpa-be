@@ -1,26 +1,49 @@
 
-## Sergen ISPIR
+from sklearn.externals import joblib
+import ModelFunctions
 
-from Tables import *
-##import CourseGradeController as cgc
-import DropoutController as dc
+class AppController:
 
-def main():
-    
-    ## data preparation
-    c = [0,0.5,1,1.5,2,2.5,3,3.5,4]
-    x = courseTable[:]
-    course_name = 'ceng241'
-    course_list = [i.lower() for i in courseList]
-    class_index = course_list.index('ceng241')
-    y = x[:,class_index] ## class label
-    x = np.delete(x,class_index,1) ## remove class column from input data
+    def __init__(self):
 
-    ## change y label with class value (eg. if y[0] = 3.5 then it become 7th class)
-    for i in range(y.size):
-            index = c.index(y[i])
-            y[i] = index
-##    cgc.course_grade_logistic(x,y)
+        ## load default models
+        try:
+            self.logistic = joblib.load("models/default/logistic_model")
+            self.linear = joblib.load("models/default/linear_model")
+            self.mlp = joblib.load("models/default/mlp_model")
+            self.svm = joblib.load("models/default/svm_model")
+            self.rnn = joblib.load("models/default/rnn_model")
+        except IOError as e:
+            print("One of the model file doesn't exist.")
 
-if __name__ == "__main__":
-    main()
+
+    ## prediction functions
+            
+    def predict_course_grade(self,vector):
+        return self.logistic.predict(vector)
+
+    def predict_dropout(self,vector):
+        return self.logistic.predict(vector)
+
+    def predict_gpa(self,vector):
+        return self.linear.predict(vector) 
+
+    def predict_length(self,vector):
+        return self.linear.predict(vector)
+
+
+    ## new models
+
+    def create_new_model(self, predict_function, algorithm_name, parameters):
+        if predict_function=='gpa':
+            
+            pass
+        elif predict_function=='dropout':
+            
+            pass
+        elif predict_function=='course_grade':
+            
+            pass    
+        elif predict_function=='study_length':
+            
+            pass
