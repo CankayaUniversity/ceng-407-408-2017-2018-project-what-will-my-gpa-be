@@ -12,8 +12,8 @@ def convert_nan_to_numeric(data):
 
 ## read csv files
 try:
-    grades = pd.read_csv('data/grade_sample.csv') 
-    students = pd.read_csv('data/student_sample.csv') 
+    grades = pd.read_csv('grade_sample.csv') 
+    students = pd.read_csv('student_sample.csv') 
 except IOError:
     print("CSV file does not exist!")
 

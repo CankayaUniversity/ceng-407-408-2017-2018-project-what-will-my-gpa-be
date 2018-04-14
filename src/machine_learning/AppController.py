@@ -33,7 +33,6 @@ class AppController:
 
 
     ## new models
-
     def create_new_model(self, predict_function, algorithm_name, parameters):
         if predict_function=='gpa':
             
