@@ -1,13 +1,10 @@
-
 from sklearn.externals import joblib
 from Tables import *
 import ModelFunctions as mf
 
-
 class AppController:
-
     def __init__(self):
-
+        
         ## load default models
         try:
             self.dropout = joblib.load("models/default/dropout_model")
@@ -26,11 +23,17 @@ class AppController:
 
     def reload_models(self):
         try:
-            self.logistic = joblib.load("models/default/dropout_logistic_model")
-            self.linear = joblib.load("models/default/linear_model")
-            self.mlp = joblib.load("models/default/mlp_model")
-            self.svm = joblib.load("models/default/svm_model")
-            self.rnn = joblib.load("models/default/rnn_model")
+            self.dropout = joblib.load("models/default/dropout_model")
+            self.gpa2 = joblib.load("models/default/gpa2_model")
+            self.gpa3 = joblib.load("models/default/gpa3_model")
+            self.gpa4 = joblib.load("models/default/gpa4_model")
+            self.gpa5 = joblib.load("models/default/gpa5_model")
+            self.gpa6 = joblib.load("models/default/gpa6_model")
+            self.gpa7 = joblib.load("models/default/gpa7_model")
+            self.gpa8 = joblib.load("models/default/gpa8_model")
+            self.graduation = joblib.load("models/default/graduation_gpa_model")
+            self.study_length = joblib.load("models/default/study_length_model")
+            self.course_grade = joblib.load("models/default/course_grade_model")
         except IOError as e:
             print("One of the model file doesn't exist.")
 
@@ -66,20 +69,23 @@ class AppController:
     ## new models
     def create_new_model(self, predict_function, algorithm_name, parameters):
         if predict_function=='gpa':
+            
              if algorithm_name=='linear':
                 pass
             
         elif predict_function=='dropout':
+            
             if algorithm_name=='logistic':
                 mf.dropout_logistic(dropoutTable, dropoutLabel)
             elif algorithm_name=='svm':
-                pass
+                mf.dropout_svm(dropoutTable, dropoutLabel)
             elif algorithm_name=='mlp':
-                pass
+                mf.dropout_mlp(dropoutTable, dropoutLabel)
             elif algorithm_name=='rnn':
-                pass
+                mf.dropout_rnn(dropoutTable, dropoutLabel)
             
         elif predict_function=='course_grade':
+            
             if algorithm_name=='logistic':
                 pass
             elif algorithm_name=='svm':
@@ -90,5 +96,6 @@ class AppController:
                 pass
 
         elif predict_function=='study_length':
+            
             if algorithm_name=='linear':
-                pass
+                mf.studyLength_linear(studyLengthTable, studyLengthLabel)

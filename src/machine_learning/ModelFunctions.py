@@ -36,9 +36,38 @@ def courseGrade_rnn(x,y):
     model = ML.rnn(x,y)
     joblib.dump(model, "courseGrade_rnn_model")
 
-def gpa_linear(x,y):
+def gpa2_linear(x,y):
     model = ML.linear_regression(x,y)
-    joblib.dump(model, "gpa_linear_model")
+    joblib.dump(model, "gpa2_linear_model")
+
+def gpa3_linear(x,y):
+    model = ML.linear_regression(x,y)
+    joblib.dump(model, "gpa3_linear_model")
+
+def gpa4_linear(x,y):
+    model = ML.linear_regression(x,y)
+    joblib.dump(model, "gpa4_linear_model")
+
+def gpa5_linear(x,y):
+    model = ML.linear_regression(x,y)
+    joblib.dump(model, "gpa5_linear_model")
+
+def gpa6_linear(x,y):
+    model = ML.linear_regression(x,y)
+    joblib.dump(model, "gpa6_linear_model")
+
+def gpa7_linear(x,y):
+    model = ML.linear_regression(x,y)
+    joblib.dump(model, "gpa7_linear_model")
+
+def gpa8_linear(x,y):
+    model = ML.linear_regression(x,y)
+    joblib.dump(model, "gpa8_linear_model")
+
+##graduation gpa
+def gpa0_linear(x,y):
+    model = ML.linear_regression(x,y)
+    joblib.dump(model, "gpa_graudation_linear_model")
 
 def studyLength_linear(x,y):
     model = ML.linear_regression(x,y)
