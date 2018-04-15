@@ -1,12 +1,12 @@
-
 import ML
+from Tables import *
 from sklearn.externals import joblib
 
 ## save models
 
 def dropout_logistic(x,y):
-    model = ML.logistic_regression(x,y) ##get model
-    joblib.dump(model, "dropout_logistic_model") ##save model
+    model = ML.logistic_regression(x,y) ##train model
+    joblib.dump(model, "models/default/dropout_logistic_model") ##save model
 
 def dropout_svm(x,y):
     model = ML.svm(x,y) 

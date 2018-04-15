@@ -1,4 +1,3 @@
-
 from sklearn import linear_model, neural_network
 from sklearn.svm import SVC
 from sklearn.metrics import log_loss, mean_squared_error

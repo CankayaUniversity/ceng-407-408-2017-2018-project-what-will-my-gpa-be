@@ -35,9 +35,11 @@ courseTable = convert_nan_to_numeric(table)
 ## REQUIRED table: Dropout prediction
 dropoutTable = table.copy()
 dropoutTable['gpa'] = students['Avg'].values
-dropoutTable['Dropout'] = students["Leave"].values
+##dropoutTable['Dropout'] = students["Leave"].values
+dropoutLabel = students["Leave"].values
+np.place(dropoutLabel,dropoutLabel!=0,[1])
 dropoutTable = convert_nan_to_numeric(dropoutTable)
-np.place(dropoutTable[:,-1],dropoutTable[:,-1]!=0,[1])
+##np.place(dropoutTable[:,-1],dropoutTable[:,-1]!=0,[1])
 
 ## REQUIRED table: GPA prediction
 ##gpaTable = table.copy()

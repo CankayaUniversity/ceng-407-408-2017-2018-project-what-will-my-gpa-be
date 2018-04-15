@@ -1,12 +1,10 @@
-from Tables import *
-from ML import *
-##from AppController import *
+from AppController import *
 
-##mf.Dropout(x,y)
-##ac = AppController()
-
+ac = AppController()
+##ac.create_new_model('dropout','logistic',None)
+##ac.predict_dropout(dropoutTable[0])
 
 ##logistic_regression(x,y)
 ##svm(x,y)
 ##mlp(x,y)
-rnn(x,y)
+##rnn(x,y)
