@@ -1,6 +1,6 @@
 from sklearn import linear_model, neural_network
 from sklearn.svm import LinearSVC
-from sklearn.metrics import log_loss, mean_squared_error
+from sklearn.metrics import log_loss, mean_squared_error, hinge_loss
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import MinMaxScaler
@@ -44,7 +44,7 @@ def svm(x,y,p):
     res = np.array(accuracy)
 
     print("\nSupport Vector Machine\n----------------------\nAccuracy: %.2f" % res.mean())
-    
+    print("Loss: %.2f"%hinge_loss(y,model.decision_function(x)))
     return model
 
 def mlp(x,y,p):

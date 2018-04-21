@@ -80,7 +80,7 @@ class AppController:
         if predict_function=='gpa':
             
              if algorithm_name=='linear':
-                pass
+                mf.graduationgpa_linear(graduationTable,graduationLabel,parameters)
             
         elif predict_function=='dropout':
             
@@ -91,17 +91,19 @@ class AppController:
             elif algorithm_name=='mlp':
                 mf.dropout_mlp(dropoutTable, dropoutLabel, parameters)
             elif algorithm_name=='rnn':
-                mf.dropout_rnn(dropoutTable, dropoutLabel, parameters)
+##                mf.dropout_rnn(dropoutTable, dropoutLabel, parameters)
+                pass
             
         elif predict_function=='course_grade':
             
             if algorithm_name=='logistic':
-                pass
+                mf.courseGrade_logistic(courseTable,courseLabel,parameters)
             elif algorithm_name=='svm':
-                pass
+                mf.courseGrade_svm(courseTable,courseLabel,parameters)
             elif algorithm_name=='mlp':
-                pass
+                mf.courseGrade_mlp(courseTable,courseLabel,parameters)
             elif algorithm_name=='rnn':
+##                mf.courseGrade_logistic(courseTable,courseLabel,parameters)
                 pass
 
         elif predict_function=='study_length':

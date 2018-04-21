@@ -65,7 +65,7 @@ def gpa8_linear(x,y,p):
     joblib.dump(model, "models/gpa8_linear_model")
 
 ##graduation gpa
-def gpa0_linear(x,y,p):
+def graduationgpa_linear(x,y,p):
     model = ML.linear_regression(x,y,p)
     joblib.dump(model, "models/gpa_graudation_linear_model")
 
