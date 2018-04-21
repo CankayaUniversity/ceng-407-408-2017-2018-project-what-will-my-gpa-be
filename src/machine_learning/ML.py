@@ -1,5 +1,5 @@
 from sklearn import linear_model, neural_network
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 from sklearn.metrics import log_loss, mean_squared_error
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
@@ -11,48 +11,51 @@ import numpy as np
 ## 10fold splitting
 kf = KFold(n_splits=10, shuffle=True)
 
-def logistic_regression(x,y):
+def logistic_regression(x,y,p):
     ##create model
     model = linear_model.LogisticRegression()
     
     ##Train and test
-    result = [model.fit(x[train], y[train]).score(x[test],y[test]) for train, test in kf.split(x)]
-    [print('Accuracy: %.2f' % i) for i in result]
+    accuracy = [model.fit(x[train], y[train]).score(x[test],y[test]) for train, test in kf.split(x)]
+    res = np.array(accuracy)
 
-##    cross_val_score(model, x, y, cv=kf, n_jobs=-1)
-
-    print("Accuracy: %.2f" % model.score(x,y))
+    print("\nLogistic Regression\n-----------------\nAccuracy: %.2f" % res.mean())
     print("Loss: %.2f" % log_loss(y, model.predict_proba(x)))
+    
     return model
 
-def linear_regression(x,y):
+def linear_regression(x,y,p):
     ##create model
     model = linear_model.LinearRegression()
+
     model.fit(x,y)
-    
-    print("Accuracy: %.2f" % model.score(x,y))
+
+    print("\nLinear Regression\n-----------------\nAccuracy: %.2f" % model.score(x,y))
     print("Loss: %.2f" % mean_squared_error(y, model.predict(x)))
-    return model
-
-def svm(x,y):
-    ##create model
-    model = SVC()
-    
-    ##Train and test
-    result = [model.fit(x[train], y[train]).score(x[test],y[test]) for train, test in kf.split(x)]
-    [print('Accuracy: %.2f' % i) for i in result]
     
     return model
 
-def mlp(x,y):
+def svm(x,y,p):
     ##create model
-    model = neural_network.MLPClassifier()
+    model = LinearSVC()
     
     ##Train and test
-    result = [model.fit(x[train], y[train]).score(x[test],y[test]) for train, test in kf.split(x)]
-    [print('Accuracy: %.2f' % i) for i in result]
+    accuracy = [model.fit(x[train], y[train]).score(x[test],y[test]) for train, test in kf.split(x)]
+    res = np.array(accuracy)
+
+    print("\nSupport Vector Machine\n----------------------\nAccuracy: %.2f" % res.mean())
     
-    print("\nAccuracy: %.2f" % model.score(x,y))
+    return model
+
+def mlp(x,y,p):
+    ##create model
+    model = neural_network.MLPClassifier(max_iter=1000)
+    
+    ##Train and test
+    accuracy = [model.fit(x[train], y[train]).score(x[test],y[test]) for train, test in kf.split(x)]
+    res = np.array(accuracy)
+    
+    print("\nMultilayer Perceptron\n-----------------\nAccuracy: %.2f" % res.mean())
     print("Loss: %.2f" % model.loss_)
     return model
 
@@ -63,5 +66,5 @@ def rnn(x,y):
     model.add(LSTM(5, input_shape=(1, 117)))
     model.add(Dense(1, activation='sigmoid'))
     model.compile(loss='mean_squared_error', optimizer='adam')
-    model.fit(x, y, epochs=100, batch_size=1, verbose=2)
+    model.fit(x, y, epochs=200, batch_size=1, verbose=2)
     return model

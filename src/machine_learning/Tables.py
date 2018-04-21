@@ -8,7 +8,7 @@ def convert_nan_to_numeric(data):
     imp = Imputer(missing_values='NaN', strategy='most_frequent', axis=0) 
     imp.fit(data) 
     data = imp.transform(data) ## data holds necesserry numpy table
-    return data
+    return data, imp
 
 ## read csv files
 try:
@@ -16,6 +16,7 @@ try:
     students = pd.read_csv('student_sample.csv') 
 except IOError:
     print("CSV file does not exist!")
+
 
 ## Preprocessing: Clean and modify tables
 grades = grades.drop((grades[grades.Grade == 'S'] | grades[grades.Grade == 'U'] | grades[grades.Grade == 'W']).index) ##remove rows that has Grade value = S, U or W
@@ -27,43 +28,52 @@ students = students.replace([None],[0])
 table = grades.pivot_table(values='Grade', index='StudID', columns='CourseCode', aggfunc='first')
 table = table.replace([None,"AA","BA","BB","CB","CC","DC","DD","FD","FF"], [np.nan,4.0,3.5,3.0,2.5,2.0,1.5,1.0,0.5,0])
 courseList = list(table.columns.values) ##get course name list
-##np_table = convert_nan_to_numeric(table)
+courseList = [x.lower() for x in courseList]
 
 ## REQUIRED table: Course Grade prediction
-courseTable = convert_nan_to_numeric(table)
+courseTable, course_imp = convert_nan_to_numeric(table.copy())
 
 ## REQUIRED table: Dropout prediction
 dropoutTable = table.copy()
 dropoutTable['gpa'] = students['Avg'].values
-##dropoutTable['Dropout'] = students["Leave"].values
 dropoutLabel = students["Leave"].values
 np.place(dropoutLabel,dropoutLabel!=0,[1])
-dropoutTable = convert_nan_to_numeric(dropoutTable)
-##np.place(dropoutTable[:,-1],dropoutTable[:,-1]!=0,[1])
+dropoutTable, dropout_imp = convert_nan_to_numeric(dropoutTable)
 
 ## REQUIRED table: GPA prediction
-##gpaTable = table.copy()
-##gpaTable['gpa'] = students['Avg'].values
-##gpaTable = convert_nan_to_numeric(gpaTable)
+graduationTable = table.copy()
+graduationTable, graduation_imp = convert_nan_to_numeric(graduationTable)
+graduationLabel = students['Avg']
 
 ## REQUIRED table: Length of study prediction
-
+studyTable = table.copy()
+studyTable, study_imp = convert_nan_to_numeric(studyTable)
+studyLabel = students['Graduate'] - students['Entry']
+studyLabel = studyLabel.values
+indx=[0,1]
+for j in range(studyLabel.shape[0]):
+	if studyLabel[j]<=0:
+		indx = np.append(indx,j)
+indx = indx[::-1]
+for j in range(len(indx)):
+    studyTable = np.delete(studyTable,indx[j],axis=0)
+    studyLabel = np.delete(studyLabel,indx[j])
 
 ##############
 
 ## data preparation
-c = [0,0.5,1,1.5,2,2.5,3,3.5,4]
-x = courseTable[:]
-course_name = 'ceng241'
-course_list = [i.lower() for i in courseList]
-class_index = course_list.index('ceng241')
-y = x[:,class_index] ## class label
-x = np.delete(x,class_index,1) ## remove class column from input data
-
-## change y label with class value (eg. if y[0] = 3.5 then it become 7th class)
-for i in range(y.size):
-        index = c.index(y[i])
-        y[i] = index
+##c = [0,0.5,1,1.5,2,2.5,3,3.5,4]
+##x = courseTable[:]
+##course_name = 'ceng241'
+##course_list = [i.lower() for i in courseList]
+##class_index = course_list.index('ceng241')
+##y = x[:,class_index] ## class label
+##x = np.delete(x,class_index,1) ## remove class column from input data
+##
+#### change y label with class value (eg. if y[0] = 3.5 then it become 7th class)
+##for i in range(y.size):
+##        index = c.index(y[i])
+##        y[i] = index
 
 
 
