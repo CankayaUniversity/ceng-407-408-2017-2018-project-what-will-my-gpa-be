@@ -4,37 +4,43 @@ import ModelFunctions as mf
 
 class AppController:
     def __init__(self):
-        
         ## load default models
         try:
-            self.dropout = joblib.load("models/default/dropout_model")
-            self.gpa2 = joblib.load("models/default/gpa2_model")
-            self.gpa3 = joblib.load("models/default/gpa3_model")
-            self.gpa4 = joblib.load("models/default/gpa4_model")
-            self.gpa5 = joblib.load("models/default/gpa5_model")
-            self.gpa6 = joblib.load("models/default/gpa6_model")
-            self.gpa7 = joblib.load("models/default/gpa7_model")
-            self.gpa8 = joblib.load("models/default/gpa8_model")
-            self.graduation = joblib.load("models/default/graduation_gpa_model")
-            self.study_length = joblib.load("models/default/study_length_model")
-            self.course_grade = joblib.load("models/default/course_grade_model")
+            self.dropout = joblib.load("models/dropout_logistic_model")
+            self.graduation = joblib.load("models/gpa7_model")
+            self.study_length = joblib.load("models/studyLength_linear_model")
+            self.course_grade = joblib.load("models/course_logistic_model")
+##            for i in range(8):
+##                m = "models/gpa"+str(i)+"_model"
+##                self.gpa.append(joblib.load(m))
         except IOError as e:
             print("One of the model file doesn't exist.")
 
+    ## convert course grades to numeric ones(eg. AA=4, CB = 2.5)
+    def courses_to_numeric(self,arr):
+        numeric = [0,0.5,1,1.5,2,2.5,3,3.5,4]
+        score   = ["FF","FD","DD","DC","CC","CB","BB","BA","AA"]
+        for i in range(len(arr)):
+                    index = score.index(arr[i])
+                    arr[i] = numeric[index]
+        return arr
 
     ## prediction functions
     def predict_course_grade(self,vector,course_list,pcourse_name):
+        model = joblib.load("models/course_"+pcourse_name+"_model")
+        vector=self.courses_to_numeric(vector)
         lst = np.empty(courseTable.shape[1])
         lst[:] = np.nan
         for i in range(len(course_list)):
             lst[courseList.index(course_list[i])] = vector[i]
         lst = lst.reshape(1,-1)
         lst = course_imp.transform(lst)
-        result = self.course_grade.predict(vector)
+        result = model[0].predict(lst)
         print(result)
-##        return 
+##        return result
 
     def predict_dropout(self,vector,course_list):
+        vector=self.courses_to_numeric(vector)
         lst = np.empty(dropoutTable.shape[1])
         lst[:] = np.nan
         for i in range(len(course_list)):
@@ -45,34 +51,44 @@ class AppController:
         if result[0] == 1: return True
         else:   return False
 
-    def predict_gpa(self,vector,semester,course_list):
-        if semester=='2':
-            return self.gpa2.predict(vector)
+    def predict_gpa(self,vector,course_list,semester):
+        vector=self.courses_to_numeric(vector)
+        lst = np.empty(graduationTable.shape[1])
+        lst[:] = np.nan
+        for i in range(len(course_list)):
+            lst[courseList.index(course_list[i])] = vector[i]
+        lst = lst.reshape(1,-1)
+        lst = graduation_imp.transform(lst)
+        
+        if semester=='0':
+            return self.gpa[0].predict(vector)
+        elif semester=='1':
+            return self.gpa[1].predict(vector)
+        elif semester=='2':
+            return self.gpa[2].predict(vector)
         elif semester=='3':
-            return self.gpa3.predict(vector)
+            return self.gpa[3].predict(vector)
         elif semester=='4':
-            return self.gpa4.predict(vector)
+            return self.gpa[4].predict(vector)
         elif semester=='5':
-            return self.gpa5.predict(vector)
+            return self.gpa[5].predict(vector)
         elif semester=='6':
-            return self.gpa6.predict(vector)
-        elif semester=='7':
-            return self.gpa7.predict(vector)
-        elif semester=='8':
-            return self.gpa8.predict(vector)
-        elif semester=='0': ##graduation gpa
-            return self.graduation.predict(vector)
+            return self.gpa[6].predict(vector)
+        elif semester=='graduation': ##graduation gpa
+            result = self.graduation[0].predict(lst)
+            if result<0: result=result*-1
+            return "%.2f"%result
          
     def predict_length(self,vector,course_list):
+        vector=self.courses_to_numeric(vector)
         lst = np.empty(studyTable.shape[1])
         lst[:] = np.nan
         for i in range(len(course_list)):
             lst[courseList.index(course_list[i])] = vector[i]
         lst = lst.reshape(1,-1)
         lst = study_imp.transform(lst)
-        result = self.study_length.predict(lst)
-        print(result)
-##        return self.study_length.predict(lst)
+        result = self.study_length[0].predict(lst)
+        return np.round(result[0])
 
 
     ## new models
@@ -85,26 +101,35 @@ class AppController:
         elif predict_function=='dropout':
             
             if algorithm_name=='logistic':
-                mf.dropout_logistic(dropoutTable, dropoutLabel, parameters)
+                info = mf.dropout_logistic(dropoutTable, dropoutLabel, parameters)
+                return info
             elif algorithm_name=='svm':
                 mf.dropout_svm(dropoutTable, dropoutLabel, parameters)
             elif algorithm_name=='mlp':
                 mf.dropout_mlp(dropoutTable, dropoutLabel, parameters)
-            elif algorithm_name=='rnn':
+##            elif algorithm_name=='rnn':
 ##                mf.dropout_rnn(dropoutTable, dropoutLabel, parameters)
-                pass
             
         elif predict_function=='course_grade':
+            c = [0,0.5,1,1.5,2,2.5,3,3.5,4]
+            x = courseTable[:]
+            course_name = parameters['course'].lower()
+            class_index = courseList.index(course_name)
+            y = x[:,class_index] ## class label
+            x = np.delete(x,class_index,1) ## remove class column from input data
+            ## change y label with class value (eg. if y[0] = 3.5 then it become 7th class)
+            for i in range(y.size):
+                    index = c.index(y[i])
+                    y[i] = index
             
             if algorithm_name=='logistic':
-                mf.courseGrade_logistic(courseTable,courseLabel,parameters)
-            elif algorithm_name=='svm':
-                mf.courseGrade_svm(courseTable,courseLabel,parameters)
-            elif algorithm_name=='mlp':
-                mf.courseGrade_mlp(courseTable,courseLabel,parameters)
-            elif algorithm_name=='rnn':
-##                mf.courseGrade_logistic(courseTable,courseLabel,parameters)
-                pass
+                mf.courseGrade_logistic(x,y,parameters)
+##            elif algorithm_name=='svm':
+##                mf.courseGrade_svm(x,y,parameters)
+##            elif algorithm_name=='mlp':
+##                mf.courseGrade_mlp(x,y,parameters)
+##            elif algorithm_name=='rnn':
+##                mf.courseGrade_rnn(courseTable,courseLabel,parameters)
 
         elif predict_function=='study_length':
             

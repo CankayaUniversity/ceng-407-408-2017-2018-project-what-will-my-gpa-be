@@ -58,22 +58,3 @@ indx = indx[::-1]
 for j in range(len(indx)):
     studyTable = np.delete(studyTable,indx[j],axis=0)
     studyLabel = np.delete(studyLabel,indx[j])
-
-##############
-
-## data preparation
-##c = [0,0.5,1,1.5,2,2.5,3,3.5,4]
-##x = courseTable[:]
-##course_name = 'ceng241'
-##course_list = [i.lower() for i in courseList]
-##class_index = course_list.index('ceng241')
-##y = x[:,class_index] ## class label
-##x = np.delete(x,class_index,1) ## remove class column from input data
-##
-#### change y label with class value (eg. if y[0] = 3.5 then it become 7th class)
-##for i in range(y.size):
-##        index = c.index(y[i])
-##        y[i] = index
-
-
-

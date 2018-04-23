@@ -4,8 +4,8 @@ from sklearn.metrics import log_loss, mean_squared_error, hinge_loss
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import MinMaxScaler
-from keras.models import Sequential
-from keras.layers import Dense, LSTM
+##from keras.models import Sequential
+##from keras.layers import Dense, LSTM
 import numpy as np
 
 ## 10fold splitting
@@ -17,12 +17,16 @@ def logistic_regression(x,y,p):
     
     ##Train and test
     accuracy = [model.fit(x[train], y[train]).score(x[test],y[test]) for train, test in kf.split(x)]
-    res = np.array(accuracy)
+    res = np.array(accuracy) ##get accuracy array as numpy array
+
+    print(x.shape,y.shape)
 
     print("\nLogistic Regression\n-----------------\nAccuracy: %.2f" % res.mean())
     print("Loss: %.2f" % log_loss(y, model.predict_proba(x)))
+
+    info=['%.2f'%res.mean(),'%.2f'%log_loss(y, model.predict_proba(x))]
     
-    return model
+    return model, info
 
 def linear_regression(x,y,p):
     ##create model
@@ -32,8 +36,10 @@ def linear_regression(x,y,p):
 
     print("\nLinear Regression\n-----------------\nAccuracy: %.2f" % model.score(x,y))
     print("Loss: %.2f" % mean_squared_error(y, model.predict(x)))
+
+    info=['%.2f'%model.score(x,y),'%.2f'%mean_squared_error(y, model.predict(x)),str(model.normalize), model.fit_intercept]
     
-    return model
+    return model, info
 
 def svm(x,y,p):
     ##create model
@@ -45,7 +51,10 @@ def svm(x,y,p):
 
     print("\nSupport Vector Machine\n----------------------\nAccuracy: %.2f" % res.mean())
     print("Loss: %.2f"%hinge_loss(y,model.decision_function(x)))
-    return model
+
+    info=['%.2f'%res.mean(),'%.2f'%hinge_loss(y,model.decision_function(x)),str(model.penalty)]
+    
+    return model, info
 
 def mlp(x,y,p):
     ##create model
@@ -57,14 +66,17 @@ def mlp(x,y,p):
     
     print("\nMultilayer Perceptron\n-----------------\nAccuracy: %.2f" % res.mean())
     print("Loss: %.2f" % model.loss_)
-    return model
 
-def rnn(x,y):
-    x = np.reshape(x, (x.shape[0],1,x.shape[1]))
+    info=['%.2f'%res.mean(),'%.2f'%model.loss_]
     
-    model = Sequential()
-    model.add(LSTM(5, input_shape=(1, 117)))
-    model.add(Dense(1, activation='sigmoid'))
-    model.compile(loss='mean_squared_error', optimizer='adam')
-    model.fit(x, y, epochs=200, batch_size=1, verbose=2)
-    return model
+    return model, info
+
+##def rnn(x,y):
+##    x = np.reshape(x, (x.shape[0],1,x.shape[1]))
+##    
+##    model = Sequential()
+##    model.add(LSTM(5, input_shape=(1, 117)))
+##    model.add(Dense(1, activation='sigmoid'))
+##    model.compile(loss='mean_squared_error', optimizer='adam')
+##    model.fit(x, y, epochs=200, batch_size=1, verbose=2)
+##    return model

@@ -5,8 +5,9 @@ from sklearn.externals import joblib
 ## save models
 
 def dropout_logistic(x,y,p):
-    model = ML.logistic_regression(x,y,p) ##train model
+    model, info = ML.logistic_regression(x,y,p) ##train model
     joblib.dump(model, "models/dropout_logistic_model") ##save model
+    return info
 
 def dropout_svm(x,y,p):
     model = ML.svm(x,y,p) 
@@ -22,7 +23,7 @@ def dropout_rnn(x,y,p):
 
 def courseGrade_logistic(x,y,p):
     model = ML.logistic_regression(x,y,p)
-    joblib.dump(model, "models/courseGrade_logistic_model")
+    joblib.dump(model, "models/course_"+p['course']+"_model")
 
 def courseGrade_svm(x,y,p):
     model = ML.svm(x,y,p)
@@ -67,7 +68,7 @@ def gpa8_linear(x,y,p):
 ##graduation gpa
 def graduationgpa_linear(x,y,p):
     model = ML.linear_regression(x,y,p)
-    joblib.dump(model, "models/gpa_graudation_linear_model")
+    joblib.dump(model, "models/gpa7_model")
 
 def studyLength_linear(x,y,p):
     model = ML.linear_regression(x,y,p)
