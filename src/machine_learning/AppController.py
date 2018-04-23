@@ -9,7 +9,7 @@ class AppController:
             self.dropout = joblib.load("models/dropout_logistic_model")
             self.graduation = joblib.load("models/gpa7_model")
             self.study_length = joblib.load("models/studyLength_linear_model")
-            self.course_grade = joblib.load("models/course_logistic_model")
+##            self.course_grade = joblib.load("models/course_logistic_model")
 ##            for i in range(8):
 ##                m = "models/gpa"+str(i)+"_model"
 ##                self.gpa.append(joblib.load(m))

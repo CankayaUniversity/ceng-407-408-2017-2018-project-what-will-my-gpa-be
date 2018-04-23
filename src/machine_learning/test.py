@@ -16,11 +16,10 @@ ac = AppController()
 
 ##print(m)
 
-res=ac.predict_gpa(p,cl,'graduation')
-##res = ac.predict_dropout(p,cl)
-##res = ac.predict_length(p,cl)
-##res = ac.predict_course_grade(p,cl,'ceng241')
-print(res)
+##print(ac.predict_gpa(p,cl,'graduation'))
+##print(ac.predict_dropout(p,cl))
+##print(ac.predict_length(p,cl))
+##print(ac.predict_course_grade(p,cl,'ceng241'))
 
 ##a = ['AA'] *118
 ##b=courseList
