@@ -44,7 +44,7 @@ class AppController:
 
         class_index = courseList.index(pcourse_name)
         lst = np.delete(lst,class_index,1) ## remove class column from input data
-        result = model[0].predict(lst)
+        result = model.predict(lst)
         result = self.courses_to_numeric(result,False)
         return result[0]
 
@@ -84,7 +84,7 @@ class AppController:
         elif semester=='6':
             return self.gpa[6].predict(vector)
         elif semester=='graduation': ##graduation gpa
-            result = self.graduation[0].predict(lst)
+            result = self.graduation.predict(lst)
             if result<0: result=result*-1
             return "%.2f"%result
          
@@ -96,7 +96,7 @@ class AppController:
             lst[courseList.index(course_list[i])] = vector[i]
         lst = lst.reshape(1,-1)
         lst = study_imp.transform(lst)
-        result = self.study_length[0].predict(lst)
+        result = self.study_length.predict(lst)
         return np.round(result[0])
 
 
