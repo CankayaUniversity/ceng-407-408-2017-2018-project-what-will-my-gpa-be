@@ -6,13 +6,15 @@ p = ['AA','AA','AA','AA','AA','AA','AA','AA','AA','AA']
 
 ac = AppController()
 ##m= ac.create_new_model('dropout','logistic',None)
-##ac.create_new_model('dropout','svm',None)
-##ac.create_new_model('dropout','mlp',None)
-##ac.create_new_model('study_length','linear',None)
-##ac.create_new_model('gpa','linear',None)
-##ac.create_new_model("course_grade","logistic",dic)
-##ac.create_new_model("course_grade","svm",dic)
-##ac.create_new_model("course_grade","mlp",dic)
+##m=ac.create_new_model('dropout','svm',None)
+##m=ac.create_new_model('dropout','mlp',None)
+##m=ac.create_new_model('study_length','linear',None)
+##m=ac.create_new_model('gpa','linear',None)
+##m=ac.create_new_model("course_grade","logistic",dic)
+##m=ac.create_new_model("course_grade","svm",dic)
+##m=ac.create_new_model("course_grade","mlp",dic)
+
+##print(m)
 
 ##res=ac.predict_gpa(p,cl,'graduation')
 ##res = ac.predict_dropout(p,cl)

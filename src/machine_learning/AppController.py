@@ -105,17 +105,16 @@ class AppController:
         if predict_function=='gpa':
             
              if algorithm_name=='linear':
-                mf.graduationgpa_linear(graduationTable,graduationLabel,parameters)
+                return mf.graduationgpa_linear(graduationTable,graduationLabel,parameters)
             
         elif predict_function=='dropout':
             
             if algorithm_name=='logistic':
-                info = mf.dropout_logistic(dropoutTable, dropoutLabel, parameters)
-                return info
+                return mf.dropout_logistic(dropoutTable, dropoutLabel, parameters)
             elif algorithm_name=='svm':
-                mf.dropout_svm(dropoutTable, dropoutLabel, parameters)
+                return mf.dropout_svm(dropoutTable, dropoutLabel, parameters)
             elif algorithm_name=='mlp':
-                mf.dropout_mlp(dropoutTable, dropoutLabel, parameters)
+                return mf.dropout_mlp(dropoutTable, dropoutLabel, parameters)
 ##            elif algorithm_name=='rnn':
 ##                mf.dropout_rnn(dropoutTable, dropoutLabel, parameters)
             
@@ -132,15 +131,15 @@ class AppController:
                     y[i] = index
             
             if algorithm_name=='logistic':
-                mf.courseGrade_logistic(x,y,parameters)
+                return mf.courseGrade_logistic(x,y,parameters)
             elif algorithm_name=='svm':
-                mf.courseGrade_svm(x,y,parameters)
+                return mf.courseGrade_svm(x,y,parameters)
             elif algorithm_name=='mlp':
-                mf.courseGrade_mlp(x,y,parameters)
+                return mf.courseGrade_mlp(x,y,parameters)
 ##            elif algorithm_name=='rnn':
 ##                mf.courseGrade_rnn(courseTable,courseLabel,parameters)
 
         elif predict_function=='study_length':
             
             if algorithm_name=='linear':
-                mf.studyLength_linear(studyTable, studyLabel, parameters)
+                return mf.studyLength_linear(studyTable, studyLabel, parameters)

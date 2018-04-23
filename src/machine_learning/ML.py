@@ -19,8 +19,6 @@ def logistic_regression(x,y,p):
     accuracy = [model.fit(x[train], y[train]).score(x[test],y[test]) for train, test in kf.split(x)]
     res = np.array(accuracy) ##get accuracy array as numpy array
 
-    print(x.shape,y.shape)
-
     print("\nLogistic Regression\n-----------------\nAccuracy: %.2f" % res.mean())
     print("Loss: %.2f" % log_loss(y, model.predict_proba(x)))
 
@@ -37,7 +35,7 @@ def linear_regression(x,y,p):
     print("\nLinear Regression\n-----------------\nAccuracy: %.2f" % model.score(x,y))
     print("Loss: %.2f" % mean_squared_error(y, model.predict(x)))
 
-    info=['%.2f'%model.score(x,y),'%.2f'%mean_squared_error(y, model.predict(x)),str(model.normalize), model.fit_intercept]
+    info=['%.2f'%model.score(x,y),'%.2f'%mean_squared_error(y, model.predict(x))]
     
     return model, info
 
@@ -52,7 +50,7 @@ def svm(x,y,p):
     print("\nSupport Vector Machine\n----------------------\nAccuracy: %.2f" % res.mean())
     print("Loss: %.2f"%hinge_loss(y,model.decision_function(x)))
 
-    info=['%.2f'%res.mean(),'%.2f'%hinge_loss(y,model.decision_function(x)),str(model.penalty)]
+    info=['%.2f'%res.mean(),'%.2f'%hinge_loss(y,model.decision_function(x))]
     
     return model, info
 
