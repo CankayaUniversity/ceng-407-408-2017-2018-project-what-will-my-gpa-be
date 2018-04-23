@@ -17,30 +17,39 @@ class AppController:
             print("One of the model file doesn't exist.")
 
     ## convert course grades to numeric ones(eg. AA=4, CB = 2.5)
-    def courses_to_numeric(self,arr):
+    def courses_to_numeric(self,arr,reverse):
         numeric = [0,0.5,1,1.5,2,2.5,3,3.5,4]
         score   = ["FF","FD","DD","DC","CC","CB","BB","BA","AA"]
-        for i in range(len(arr)):
-                    index = score.index(arr[i])
-                    arr[i] = numeric[index]
+        if reverse:
+            for i in range(len(arr)):
+                        index = score.index(arr[i])
+                        arr[i] = numeric[index]
+        else:
+            for i in range(len(arr)):
+                        index = numeric.index(arr[i])
+                        arr = np.append(arr,score[index])
+                        arr = np.delete(arr,i)
         return arr
 
     ## prediction functions
     def predict_course_grade(self,vector,course_list,pcourse_name):
         model = joblib.load("models/course_"+pcourse_name+"_model")
-        vector=self.courses_to_numeric(vector)
+        vector=self.courses_to_numeric(vector,True) ##convert course grades to numeric ones(eg. AA=4, CB = 2.5)
         lst = np.empty(courseTable.shape[1])
         lst[:] = np.nan
         for i in range(len(course_list)):
             lst[courseList.index(course_list[i])] = vector[i]
         lst = lst.reshape(1,-1)
         lst = course_imp.transform(lst)
+
+        class_index = courseList.index(pcourse_name)
+        lst = np.delete(lst,class_index,1) ## remove class column from input data
         result = model[0].predict(lst)
-        print(result)
-##        return result
+        result = self.courses_to_numeric(result,False)
+        return result[0]
 
     def predict_dropout(self,vector,course_list):
-        vector=self.courses_to_numeric(vector)
+        vector=self.courses_to_numeric(vector,True)
         lst = np.empty(dropoutTable.shape[1])
         lst[:] = np.nan
         for i in range(len(course_list)):
@@ -52,7 +61,7 @@ class AppController:
         else:   return False
 
     def predict_gpa(self,vector,course_list,semester):
-        vector=self.courses_to_numeric(vector)
+        vector=self.courses_to_numeric(vector,True)
         lst = np.empty(graduationTable.shape[1])
         lst[:] = np.nan
         for i in range(len(course_list)):
@@ -80,7 +89,7 @@ class AppController:
             return "%.2f"%result
          
     def predict_length(self,vector,course_list):
-        vector=self.courses_to_numeric(vector)
+        vector=self.courses_to_numeric(vector,True)
         lst = np.empty(studyTable.shape[1])
         lst[:] = np.nan
         for i in range(len(course_list)):
@@ -124,10 +133,10 @@ class AppController:
             
             if algorithm_name=='logistic':
                 mf.courseGrade_logistic(x,y,parameters)
-##            elif algorithm_name=='svm':
-##                mf.courseGrade_svm(x,y,parameters)
-##            elif algorithm_name=='mlp':
-##                mf.courseGrade_mlp(x,y,parameters)
+            elif algorithm_name=='svm':
+                mf.courseGrade_svm(x,y,parameters)
+            elif algorithm_name=='mlp':
+                mf.courseGrade_mlp(x,y,parameters)
 ##            elif algorithm_name=='rnn':
 ##                mf.courseGrade_rnn(courseTable,courseLabel,parameters)
 

@@ -58,7 +58,7 @@ def svm(x,y,p):
 
 def mlp(x,y,p):
     ##create model
-    model = neural_network.MLPClassifier(max_iter=1000)
+    model = neural_network.MLPClassifier(max_iter=2000)
     
     ##Train and test
     accuracy = [model.fit(x[train], y[train]).score(x[test],y[test]) for train, test in kf.split(x)]
