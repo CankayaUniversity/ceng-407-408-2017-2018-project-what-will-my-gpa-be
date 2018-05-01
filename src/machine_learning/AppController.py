@@ -1,9 +1,19 @@
 from sklearn.externals import joblib
 from Tables import *
-import ModelFunctions as mf
+##import ModelFunctions as mf
+import MySQLdb, ML
 
 class AppController:
     def __init__(self):
+
+        ## get number of models form database for save more model
+        db = MySQLdb.connect("localhost","root","1234","ceng408" )
+        cursor = db.cursor()
+        query = "SELECT * from new_table"
+        cursor.execute(query)
+        self.total_rows = cursor.rowcount
+        db.close()
+        
         ## load default models
         try:
             self.dropout = joblib.load("models/dropout_logistic_model")
@@ -83,7 +93,7 @@ class AppController:
             return self.gpa[5].predict(vector)
         elif semester=='6':
             return self.gpa[6].predict(vector)
-        elif semester=='graduation': ##graduation gpa
+        elif semester=='graduation':
             result = self.graduation.predict(lst)
             if result<0: result=result*-1
             return "%.2f"%result
@@ -100,46 +110,92 @@ class AppController:
         return np.round(result[0])
 
 
-    ## new models
-    def create_new_model(self, predict_function, algorithm_name, parameters):
+    ## create new models
+    def create_new_model(self, predict_function, algorithm_name, parameters,course_name):
         if predict_function=='gpa':
             
              if algorithm_name=='linear':
-                return mf.graduationgpa_linear(graduationTable,graduationLabel,parameters)
+                 return ML.linear_regression(graduationTable, graduationLabel, parameters)
             
         elif predict_function=='dropout':
             
             if algorithm_name=='logistic':
-                return mf.dropout_logistic(dropoutTable, dropoutLabel, parameters)
+                return ML.logistic_regression(dropoutTable, dropoutLabel, parameters)
             elif algorithm_name=='svm':
-                return mf.dropout_svm(dropoutTable, dropoutLabel, parameters)
+                return ML.svm(dropoutTable, dropoutLabel, parameters)
             elif algorithm_name=='mlp':
-                return mf.dropout_mlp(dropoutTable, dropoutLabel, parameters)
-##            elif algorithm_name=='rnn':
-##                mf.dropout_rnn(dropoutTable, dropoutLabel, parameters)
-            
+                return ML.mlp(dropoutTable, dropoutLabel, parameters)
+
         elif predict_function=='course_grade':
+
+            ##get required table without target label
             c = [0,0.5,1,1.5,2,2.5,3,3.5,4]
-            x = courseTable[:]
-            course_name = parameters['course'].lower()
-            class_index = courseList.index(course_name)
+            x = courseTable.copy()
+            class_index = courseList.index(course_name.lower())
             y = x[:,class_index] ## class label
             x = np.delete(x,class_index,1) ## remove class column from input data
             ## change y label with class value (eg. if y[0] = 3.5 then it become 7th class)
             for i in range(y.size):
                     index = c.index(y[i])
                     y[i] = index
+
             
             if algorithm_name=='logistic':
-                return mf.courseGrade_logistic(x,y,parameters)
+                return ML.logistic_regression(x,y,parameters)
             elif algorithm_name=='svm':
-                return mf.courseGrade_svm(x,y,parameters)
+                return ML.svm(x,y,parameters)
             elif algorithm_name=='mlp':
-                return mf.courseGrade_mlp(x,y,parameters)
-##            elif algorithm_name=='rnn':
-##                mf.courseGrade_rnn(courseTable,courseLabel,parameters)
+                return ML.mlp(x,y,parameters)
 
         elif predict_function=='study_length':
             
             if algorithm_name=='linear':
-                return mf.studyLength_linear(studyTable, studyLabel, parameters)
+                return ML.linear_regression(studyTable, studyLabel, parameters)
+
+
+    ## save model
+    def save_model(self,prediction_function,algorithm_name,parameters,info,model,isDefault,course,semester):
+        
+        model_path = "models/"
+        fname=prediction_function+"_"+algorithm_name+"_"+str(self.total_rows) ## for giving name to models
+        
+        db = MySQLdb.connect("localhost","root","1234","ceng408" )
+        cursor = db.cursor()
+
+        ## check default model and change isDefault
+        def_model = "UPDATE new_table \
+                    SET isDefault = 0 \
+                    WHERE function='%s' AND isDefault = 1" % (prediction_function)
+
+        try:
+            cursor.execute(def_model)
+            db.commit()
+        except:
+            print("error")
+            db.rollback()
+        
+        ## save model to database and model file
+        if course==None and semester==None:
+            s = "INSERT INTO new_table(function,algorithm,accuracy,loss,path,paramPath,isDefault) \
+                VALUES ('%s', '%s', '%f', '%f', '%s' ,'%s', '%s')" % (prediction_function, algorithm_name, float(info[0]), float(info[1]), model_path+fname, model_path+fname+'.txt', 1)
+        elif course!=None and semester==None:
+            s = "INSERT INTO new_table(function,algorithm,accuracy,loss,path,paramPath,isDefault,course) \
+                VALUES ('%s', '%s', '%f', '%f', '%s' ,'%s', '%s', '%s')" % (prediction_function, algorithm_name, float(info[0]), float(info[1]), model_path+fname, model_path+fname+'.txt', 1, course)
+        elif course==None and semester!=None:
+            s = "INSERT INTO new_table(function,algorithm,accuracy,loss,path,paramPath,isDefault) \
+                VALUES ('%s', '%s', '%f', '%f', '%s' ,'%s', '%s', '%d')" % (prediction_function, algorithm_name, float(info[0]), float(info[1]), model_path+fname, model_path+fname+'.txt', 1, semester)
+            
+        try:
+            cursor.execute(s)
+            db.commit()
+            joblib.dump(model, model_path+fname)
+        except:
+            print("Save model error!")
+            db.rollback()
+
+        ##write parameters of model to text file
+        with open(model_path+fname+'.txt','w') as output:
+            for i in range(len(parameters)):
+                output.write(str(parameters[i])+'\n')
+        
+        db.close()
