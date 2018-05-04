@@ -1,7 +1,9 @@
 from sklearn.externals import joblib
 from Tables import *
-##import ModelFunctions as mf
 import MySQLdb, ML
+import pandas as pd
+import numpy as np
+
 
 class AppController:
     def __init__(self):
@@ -138,7 +140,6 @@ class AppController:
             for i in range(y.size):
                     index = c.index(y[i])
                     y[i] = index
-
             
             if algorithm_name=='logistic':
                 return ML.logistic_regression(x,y,parameters)
@@ -212,7 +213,70 @@ class AppController:
         
         db.close()
 
-    ## save model for custom data
-    def save_custom_data_model(self):
+
+    ## create model for custom data
+    def create_new_custom_model(self, fname, algorithm_name, parameters, info, model):
         
-        pass
+        ## read table from file and convert it to numpy array
+        data = pd.read_csv(fname)
+        data = data.values
+
+        ## set train data and label
+        y = data.copy()[:,-1]
+        x = data.copy()[:,:data.shape[1]-1]
+
+        ## create model
+        if algorithm_name == 'logistic':
+            return ML.logistic_regression(x, y, parameters)
+        elif algorithm_name=='svm':
+            return ML.svm(x, y, parameters)
+        elif algorithm_name=='mlp':
+            return ML.mlp(x, y, parameters)
+        elif algorithm_name=='linear':
+            return ML.linear_regression(x, y, parameters)
+
+        
+    ## save model for custom data
+    def save_custom_data_model(self, fname, algorithm_name, parameters, info, model):
+        model_path = "models/"
+
+        ##connection to db
+        db = MySQLdb.connect("localhost","root","1234","ceng408" )
+        cursor = db.cursor()
+
+        q = "INSERT INTO new_table(function,algorithm,accuracy,loss,path,paramPath,isDefault) \
+            VALUES ('%s', '%s', '%f', '%f', '%s' ,'%s', '%s')" % (fname, algorithm_name, float(info[0]), float(info[1]), model_path+fname, model_path+fname+'.txt', 1)
+
+        try:
+            db.execute(q)
+            db.commit()
+        except:
+            db.rollback()
+
+        ##write parameters of model to text file
+        with open(model_path+fname+'.txt','w') as output:
+            for i in range(len(parameters)):
+                output.write(str(parameters[i])+'\n')
+        
+        db.close()
+        
+    ## predict input with custom data model
+    def predict_custom_model(self, fname, vector):
+        
+        ##connection to db
+        db = MySQLdb.connect("localhost","root","1234","ceng408" )
+        cursor = db.cursor()
+        
+        q = "SELECT path \
+            FROM new_table \
+            WHERE function='%s'" % (fname)
+        try:
+            cursor.execute(q)
+            model_path = cursor.fetchone()
+        except:
+            print ("Error: Unable to fetch data")
+        db.close()
+
+        model = joblib.load(model_path)
+
+        return model.predict(vector)
