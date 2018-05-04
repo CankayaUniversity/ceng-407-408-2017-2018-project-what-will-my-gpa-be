@@ -153,35 +153,47 @@ class AppController:
                 return ML.linear_regression(studyTable, studyLabel, parameters)
 
 
-    ## save model
-    def save_model(self,prediction_function,algorithm_name,parameters,info,model,isDefault,course,semester):
+    ## save model for student data
+    def save_model(self,prediction_function,algorithm_name,parameters,info,model,isDefault,course_name,semester):
         
         model_path = "models/"
-        fname=prediction_function+"_"+algorithm_name+"_"+str(self.total_rows) ## for giving name to models
-        
+        fname=""
+
+        ##connection to db
         db = MySQLdb.connect("localhost","root","1234","ceng408" )
         cursor = db.cursor()
 
-        ## check default model and change isDefault
-        def_model = "UPDATE new_table \
-                    SET isDefault = 0 \
-                    WHERE function='%s' AND isDefault = 1" % (prediction_function)
-
-        try:
-            cursor.execute(def_model)
-            db.commit()
-        except:
-            print("error")
-            db.rollback()
+        if prediction_function == 'course_grade':
+            fname=prediction_function+"_"+algorithm_name+"_"+course_name.lower()+"_"+str(self.total_rows) ## for giving name to models
+            ## check default model for a course and change its isDefault
+            update_q = "UPDATE new_table \
+                        SET isDefault = 0 \
+                        WHERE function='%s' AND course='%s' AND isDefault = 1" % (prediction_function, course_name)
+            try:
+                cursor.execute(update_q)
+                db.commit()
+            except:
+                db.rollback()
+        else:
+            fname=prediction_function+"_"+algorithm_name+"_"+str(self.total_rows) ## for giving name to models
+            ## check default model and change its isDefault
+            update_q = "UPDATE new_table \
+                        SET isDefault = 0 \
+                        WHERE function='%s' AND isDefault = 1" % (prediction_function)
+            try:
+                cursor.execute(update_q)
+                db.commit()
+            except:
+                db.rollback()
         
-        ## save model to database and model file
-        if course==None and semester==None:
+        ## save model and model file to database
+        if course_name==None and semester==None:
             s = "INSERT INTO new_table(function,algorithm,accuracy,loss,path,paramPath,isDefault) \
                 VALUES ('%s', '%s', '%f', '%f', '%s' ,'%s', '%s')" % (prediction_function, algorithm_name, float(info[0]), float(info[1]), model_path+fname, model_path+fname+'.txt', 1)
-        elif course!=None and semester==None:
+        elif course_name!=None and semester==None:
             s = "INSERT INTO new_table(function,algorithm,accuracy,loss,path,paramPath,isDefault,course) \
-                VALUES ('%s', '%s', '%f', '%f', '%s' ,'%s', '%s', '%s')" % (prediction_function, algorithm_name, float(info[0]), float(info[1]), model_path+fname, model_path+fname+'.txt', 1, course)
-        elif course==None and semester!=None:
+                VALUES ('%s', '%s', '%f', '%f', '%s' ,'%s', '%s', '%s')" % (prediction_function, algorithm_name, float(info[0]), float(info[1]), model_path+fname, model_path+fname+'.txt', 1, course_name)
+        elif course_name==None and semester!=None:
             s = "INSERT INTO new_table(function,algorithm,accuracy,loss,path,paramPath,isDefault) \
                 VALUES ('%s', '%s', '%f', '%f', '%s' ,'%s', '%s', '%d')" % (prediction_function, algorithm_name, float(info[0]), float(info[1]), model_path+fname, model_path+fname+'.txt', 1, semester)
             
@@ -199,3 +211,8 @@ class AppController:
                 output.write(str(parameters[i])+'\n')
         
         db.close()
+
+    ## save model for custom data
+    def save_custom_data_model(self):
+        
+        pass

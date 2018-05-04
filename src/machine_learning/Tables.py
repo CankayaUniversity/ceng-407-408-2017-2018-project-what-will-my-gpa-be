@@ -21,16 +21,6 @@ except IOError:
 ## Preprocessing: Clean and modify tables
 grades = grades.drop((grades[grades.Grade == 'S'] | grades[grades.Grade == 'U'] | grades[grades.Grade == 'W']).index) ##remove rows that has Grade value = S, U or W
 t=grades.copy()
-######
-cgrade = grades.copy()
-cgrade = cgrade.drop((cgrade[cgrade.CourseCode != "CENG"]).index)
-cgrade['CourseCode'] = cgrade['CourseCode'].apply(str)+ cgrade['CourseNum'].apply(str)
-cgrade = cgrade.drop(columns=["CourseNum"])
-ctable = cgrade.pivot_table(values='Grade', index='StudID', columns='CourseCode', aggfunc='first')
-ctable = ctable.replace([None,"AA","BA","BB","CB","CC","DC","DD","FD","FF"], [np.nan,4.0,3.5,3.0,2.5,2.0,1.5,1.0,0.5,0])
-##ctable, cimp = convert_nan_to_numeric(ctable.copy())
-######
-
 grades['CourseCode'] = grades['CourseCode'].apply(str)+ grades['CourseNum'].apply(str)
 grades = grades.drop(columns=["CourseNum"])
 students = students.replace([None],[0])
