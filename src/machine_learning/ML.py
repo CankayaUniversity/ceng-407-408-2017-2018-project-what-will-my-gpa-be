@@ -46,6 +46,8 @@ def linear_regression(x,y,p):
     print("Loss: %.2f" % mean_squared_error(y, model.predict(x)))
 
     info=['%.2f'%model.score(x,y),'%.2f'%mean_squared_error(y, model.predict(x))]
+
+    
     
     return model, info
 
@@ -106,3 +108,18 @@ def mlp(x,y,p):
     info=['%.2f'%res.mean(),'%.2f'%model.loss_]
     
     return model, info, default_parameters
+
+
+def mlp_regressor(x,y,p):
+    model = neural_network.MLPRegressor(max_iter=10000)
+
+    ##Train and test
+    accuracy = [model.fit(x[train], y[train]).score(x[test],y[test]) for train, test in kf.split(x)]
+    res = np.array(accuracy)
+    
+    print("\nMultilayer Perceptron\n-----------------\nAccuracy: %.2f" % res.mean())
+    print("Loss: %.2f" % model.loss_)
+
+    info=['%.2f'%res.mean(),'%.2f'%model.loss_]
+
+    return model, info

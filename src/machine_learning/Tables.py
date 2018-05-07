@@ -16,8 +16,6 @@ class Tables:
         self.studyLabel = None
         self.study_imp = None
         self.courseList = None
-
-##        self.read_data("default_grade.csv","default_student.csv") ## read default tables
     
     def convert_nan_to_numeric(self, data):
         data = data.values ## convert pandas DataFrame to Numpy ndarray
@@ -58,11 +56,6 @@ class Tables:
         ## required table: Course grade prediction
         self.courseTable, self.course_imp = self.convert_nan_to_numeric(table.copy())
 
-        ## required table: gpa prediction
-        self.graduationTable = table.copy()
-        self.graduationTable, self.graduation_imp = self.convert_nan_to_numeric(self.graduationTable)
-        self.graduationLabel = students['Avg']
-
         ## required table: length study prediction
         self.studyTable = table.copy()
         self.studyTable['gpa'] = students['Avg'].values
@@ -78,6 +71,11 @@ class Tables:
         for j in range(len(indx)):
             self.studyTable = np.delete(self.studyTable,indx[j],axis=0)
             self.studyLabel = np.delete(self.studyLabel,indx[j])
+
+        ## required table: gpa prediction
+        self.graduationTable = table.copy()
+        self.graduationTable, self.graduation_imp = self.convert_nan_to_numeric(self.graduationTable)
+        self.graduationLabel = students['Avg']
         
 
 #### Preprocessing: Convert NaN values to numeric values
@@ -142,6 +140,3 @@ class Tables:
 ##    for j in range(len(indx)):
 ##        studyTable = np.delete(studyTable,indx[j],axis=0)
 ##        studyLabel = np.delete(studyLabel,indx[j])
-
-
-

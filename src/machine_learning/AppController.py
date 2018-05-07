@@ -14,19 +14,27 @@ class AppController:
         query = "SELECT * from new_table"
         cursor.execute(query)
         self.total_rows = cursor.rowcount
-        db.close()
         
+        q_dropout = "SELECT path \
+                    FROM new_table \
+                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("default_grade.csv","default_student.csv","dropout",1)
+        q_study_length = "SELECT path \
+                        FROM new_table \
+                        WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("default_grade.csv","default_student.csv","study_length",1)
+
         ## load default models
         try:
-            self.dropout = joblib.load("models/dropout_logistic_model")
-            self.graduation = joblib.load("models/gpa7_model")
-            self.study_length = joblib.load("models/studyLength_linear_model")
-##            self.course_grade = joblib.load("models/course_logistic_model")
-##            for i in range(8):
-##                m = "models/gpa"+str(i)+"_model"
-##                self.gpa.append(joblib.load(m))
+            cursor.execute(q_dropout)
+            path = cursor.fetchone()
+            self.dropout = joblib.load(path[0])
+##            self.graduation = joblib.load("models/gpa7_model")
+            cursor.execute(q_study_length)
+            path = cursor.fetchone()
+            self.study_length = joblib.load(path[0])
         except IOError as e:
             print("One of the model file doesn't exist.")
+
+        db.close()
 
     ## convert course grades to numeric ones(eg. AA=4, CB = 2.5)
     def courses_to_numeric(self,arr,reverse):
@@ -101,13 +109,15 @@ class AppController:
             return "%.2f"%result
          
     def predict_length(self,vector,course_list):
+        tb = Tables()
+        tb.read_data("default_grade.csv", "default_student.csv")
         vector=self.courses_to_numeric(vector,True)
-        lst = np.empty(studyTable.shape[1])
+        lst = np.empty(tb.studyTable.shape[1])
         lst[:] = np.nan
         for i in range(len(course_list)):
-            lst[courseList.index(course_list[i])] = vector[i]
+            lst[tb.courseList.index(course_list[i])] = vector[i]
         lst = lst.reshape(1,-1)
-        lst = study_imp.transform(lst)
+        lst = tb.study_imp.transform(lst)
         result = self.study_length.predict(lst)
         return np.round(result[0])
 
@@ -152,6 +162,8 @@ class AppController:
         elif predict_function=='study_length':
             if algorithm_name=='linear':
                 return ML.linear_regression(tb.studyTable, tb.studyLabel, parameters)
+            elif algorithm_name=='mlp_regressor':
+                return ML.mlp_regressor(tb.studyTable, tb.studyLabel, parameters)
 
 
     ## save model for student data
