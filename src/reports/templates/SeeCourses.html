@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>   
+  <meta charset="utf-8" />  
+  
+  <title>What Will My Gpa Be? </title>       
+ 
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+   <nav class="navbar navbar-default">
+      <div class="container">
+          <a class="navbar-brand" href="{{ url_for('OgrencıHomePage') }}">HomePage</a>
+        
+<div class="collapse navbar-collapse" id="navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{{ url_for('OgrencıHomePage') }}">Back</a></li>
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+<form method="GET" action="{{ url_for('CoursesPage') }}" onsubmit = "return refresh_table();"  id="frm1" >  
+
+
+<table class="table table-striped" style="width: 500px" >
+  <thead>
+    <tr>
+      <th scope="col">Semester</th>
+      <th scope="col">Course Name</th>
+      <th scope="col">Grade</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in rows %}
+    <tr>
+        <td> {{ row.semesters }} </td>
+        <td> {{ row.courses}}</td>
+        <td> {{ row.grades }}</td>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>
+<button class="btn btn-success" style="margin-left: 17px" type="button" onclick="window.location.href='{{ url_for('EditCourses') }}';">Edit Lessons</button>
+</div>
+</br>
+</body>
+</html>
+

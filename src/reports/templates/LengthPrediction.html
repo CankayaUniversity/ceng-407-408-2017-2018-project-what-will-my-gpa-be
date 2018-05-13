@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>   
+  <meta charset="utf-8" />   
+  <title>What Will My Gpa Be? </title>       
+ 
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+   <nav class="navbar navbar-default">
+      <div class="container">
+          <a class="navbar-brand" href="{{ url_for('HeadHomepage') }}">HomePage</a>
+        
+<div class="collapse navbar-collapse" id="navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{{ url_for('HeadPrediction') }}">Back</a></li>
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+<form method="GET" action="{{ url_for('LengthPrediction') }}">  
+  <div id="education_fields">
+          
+   </div>     
+
+<div class="col-sm-3 nopadding">
+  <div class="form-group">
+    <input type="text" class="form-control" id="CourseName" name="CourseName" value="" placeholder="CourseName">
+  </div>
+</div>
+
+<div class="col-sm-3 nopadding">
+  <div class="form-group">
+    <div class="input-group">
+      <select class="form-control" id="educationDate" name="educationDate">
+
+        <option value="AA">AA</option>
+        <option value="BA">BA</option>
+        <option value="BB">BB</option>
+        <option value="CB">CB</option>
+        <option value="CC">CC</option>
+        <option value="DC">DC</option>
+        <option value="DD">DD</option>
+        <option value="FD">FD</option>
+        <option value="FF">FF</option>
+        
+       
+        
+      </select>
+      <div class="input-group-btn">
+        <button class="btn btn-success" type="button"  onclick="education_fields();"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+      </div>
+    </div>
+  </div>
+</div>
+</br>
+</br>
+
+<div class="clear"></div>
+ 
+  </div>
+  </br>
+  <button class="btn btn-success" type="submit" style="margin-left: 17px">Save </button>
+  </br>
+  <label for="demo" style="font-size: 1.2em;margin-left: 17px"><b>Result:{{num}}</b></label>
+</form>
+
+</div>
+
+
+<script>
+var room = 1;
+function education_fields() {
+ 
+    room++;
+    var objTo = document.getElementById('education_fields')
+    var divtest = document.createElement("div");
+  divtest.setAttribute("class", "form-group removeclass"+room);
+  var rdiv = 'removeclass'+room;
+    divtest.innerHTML = '<div class="col-sm-3 nopadding"><div class="form-group"> <input type="text" class="form-control" id="CourseName" name="CourseName" value="" placeholder="CourseName"></div></div><div class="col-sm-3 nopadding"><div class="form-group"><div class="input-group"> <select class="form-control" id="educationDate" name="educationDate"><option value="AA">AA</option><option value="BA">BA</option><option value="BB">BB</option><option value="CB">CB</option><option value="CC">CC</option><option value="DC">DC</option><option value="DD">DD</option><option value="FD">FD</option><option value="FF">FF</option></select><div class="input-group-btn"> <button class="btn btn-danger" type="button" onclick="remove_education_fields('+ room +');"> <span class="glyphicon glyphicon-minus" aria-hidden="true"></span> </button></div></div></div></div></br></br><div class="clear"></div>';
+    
+    objTo.appendChild(divtest)
+}
+   function remove_education_fields(rid) {
+     $('.removeclass'+rid).remove();
+   }
+
+</script>
+
+
+
+ 
+  
+
+</body>
+</html>

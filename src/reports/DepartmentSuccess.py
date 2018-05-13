@@ -1,16 +1,10 @@
-
-# coding: utf-8
-
-# In[28]:
-
-
-
 import csv
 import pandas as pd
+from io import StringIO
 
-
-def get_dep_success(course):
-    grades= pd.read_csv('grade2.csv')
+path="data/"
+def get_dep_success(cName,filename):
+    grades = pd.read_csv(path+filename)
     grades.sort_values("CourseCode", inplace=True)
     
     grades = grades.drop(grades[grades.Grade == 'S'].index) 
@@ -74,11 +68,19 @@ def get_dep_success(course):
         
     return labels,values
       
+    
+def get_file(cName,filename):
+    if not filename:
+      
+        filename="grade2.csv"
+        labels,values=get_dep_success(cName,filename)
+        return labels,values
+    else:
+        labels,values=get_dep_success(cName,filename)
+        return labels,values
 
 
-
-
-
+f=[]
+filename=[]
 cName = "CENG"
-labels,values=get_dep_success(cName)
-
+labels,values=get_file(cName,filename)

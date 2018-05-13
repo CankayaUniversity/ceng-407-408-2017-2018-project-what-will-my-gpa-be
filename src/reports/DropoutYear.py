@@ -1,27 +1,16 @@
 
-# coding: utf-8
-
-# In[19]:
-
-
 import csv
 import pandas as pd
-import matplotlib.pyplot as plt
 
-students=pd.read_csv('student.csv')
-students.sort_values("StudID", inplace=True)
-#years=students.groupby(['Leave'])['Leave'].count()
-#years
 
-#list=student.tolist()
-#list
-student=students.Leave.value_counts()
-student
 
-def fin_drop_year():
+path="datastudent/"
+def fin_drop_year(filename):
+
+    students = pd.read_csv(path+filename)
+    students.sort_values("StudID", inplace=True)
     values=students.groupby('Leave')['Leave'].count().tolist()
-    #years = grades[keys]["Year"].tolist()
-    years_list_0 = students['Leave'].tolist()#[2011,2012,2013,2014]
+    years_list_0 = students['Leave'].tolist()
     years_set = set(years_list_0)
     years_list = list(years_set)
     num_kind = type(years_list[-1])
@@ -34,7 +23,18 @@ def fin_drop_year():
         new.append(int(item))
     return new, values
 
+def get_drop_file(filename):
+    if not filename:
+        filename="student.csv"
+        labels,values=fin_drop_year(filename)
+        return labels,values
+    else:
+        labels,values=fin_drop_year(filename)
+        return labels,values
 
-years,values=fin_drop_year()
+
+filename=[]
+years,values=get_drop_file(filename)
+
 
 

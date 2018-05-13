@@ -9,10 +9,10 @@ import csv
 import pandas as pd
 
 
-
-def course_listt():
-    dosya='grade2.csv'
-    grades= pd.read_csv(dosya)
+path="data/"
+def course_listt(filename):
+    
+    grades= pd.read_csv(path+filename)
     grades.sort_values("StudID", inplace=True)
 
 
@@ -34,6 +34,17 @@ def course_listt():
     courses=grades.CourseCode.unique()
     course_list=sorted(courses.tolist())
     return course_list
-courses=course_listt()
+
+def course_file_list(filename):
+    if not filename:
+        filename="grade2.csv"
+        courses=course_listt(filename)
+        return courses
+    else:
+        courses=course_listt(filename)
+        return courses
+
+filename=[]
+courses=course_file_list(filename)
 
 

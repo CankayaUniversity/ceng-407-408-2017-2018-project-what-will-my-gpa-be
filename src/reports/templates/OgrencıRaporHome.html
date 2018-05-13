@@ -2,9 +2,9 @@
 <html lang="en">
 <head>   
   <meta charset="utf-8" />   
-  <title>Chart.js </title>      
+  <title>What Will My Gpa Be? </title>      
   <script src='static/Chart.min.js'></script>
-  <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 </head>
 <body>
 
@@ -17,28 +17,15 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <form class="form-inline my-2 my-lg-0">
-      <a class="nav-brand" href="http://localhost:5000">Back<span class="sr-only">(current)</span></a>
+      <a class="nav-brand" href="{{ url_for('RaporHomepage') }}">Back<span class="sr-only">(current)</span></a>
     </form>
   </div>
 </nav>
 </br>
- <div class="row">
-  <div class="col-sm-6">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Student Succes In All Semesters</h5>
-        <p class="card-text">How many people graduate previous years?</p>
-        <a href="{{ url_for('OgrencıDonemOnce') }}" class="btn btn-outline-success my-2 my-sm-0">Go Reports</a>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Course Success Year</h5>
-        <p class="card-text">Each course success rates</p>
-        <a href="{{ url_for('OgrencıKursOnce') }}" class="btn btn-outline-success my-2 my-sm-0">Go Reports</a>
-      </div>
-    </div>
-  </div>
+<div style="text-align:center;font-size: 30px;"> 
+<a href="{{ url_for('OgrencıDonemOnce') }}">Student Succes In All Semesters</a>
+ </br>
+<a href="{{ url_for('OgrencıKursOnce') }}">Success Rate of Student According to One Lesson</a> 
 </div>
+</body>
+</html>

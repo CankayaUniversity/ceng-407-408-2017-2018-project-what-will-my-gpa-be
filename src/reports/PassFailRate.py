@@ -1,14 +1,16 @@
 
-# coding: utf-8
-
-# In[10]:
-
-
+#Efnan Gülkanat
 import csv
 import pandas as pd
-import matplotlib.pyplot as plt
+path = "data/"
 
-def get_pass_val(course):
+def get_pass_val(course,filename):
+    grades = pd.read_csv(path+filename)
+    grades.sort_values("StudID", inplace=True)
+    grades['CourseCode'] = grades['CourseCode'].apply(str)+ grades['CourseNum'].apply(str)
+    grades = grades.drop(grades[grades.Grade == 'S'].index) 
+    grades = grades.drop(grades[grades.Grade == 'U'].index) 
+    grades = grades.drop(grades[grades.Grade == 'W'].index)
     keys = grades.columns[[0, 1, 4, 7]]
     courses = grades[keys]["CourseCode"].tolist()
     letters = grades[keys]["Grade"].tolist()
@@ -52,15 +54,17 @@ def get_pass_val(course):
     return valueskalankısı,valuesgecenkısı,labels   
          
 
-#Efnan Gülkanat
-grades= pd.read_csv('grade2.csv')
-grades.sort_values("StudID", inplace=True)
-grades['CourseCode'] = grades['CourseCode'].apply(str)+ grades['CourseNum'].apply(str)
-grades = grades.drop(grades[grades.Grade == 'S'].index) 
-grades = grades.drop(grades[grades.Grade == 'U'].index) 
-grades = grades.drop(grades[grades.Grade == 'W'].index)
 
 
-cName='CENG241'
-valueskalankısı,valuesgecenkısı,labels=get_pass_val("CENG241")
+def get_pass_file(course,filename):
+    if not filename:
+        filename="grade2.csv"
+        valueskalankısı,valuesgecenkısı,labels=get_pass_val(course,filename)
+        return valueskalankısı,valuesgecenkısı,labels
+    else:
+        valueskalankısı,valuesgecenkısı,labels=get_pass_val(course,filename)
+        return valueskalankısı,valuesgecenkısı,labels
 
+course='CENG241'
+filename=[]
+valueskalankısı,valuesgecenkısı,labels=get_pass_file(course,filename)

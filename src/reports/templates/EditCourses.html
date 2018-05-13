@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>   
+  <meta charset="utf-8" />   
+  <title>What Will My Gpa Be? </title>       
+ 
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+   <nav class="navbar navbar-default">
+      <div class="container">
+          <a class="navbar-brand" href="{{ url_for('OgrencıHomePage') }}">HomePage</a>
+        
+<div class="collapse navbar-collapse" id="navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{{ url_for('SeeCourses') }}">Back</a></li>
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+<form method="POST" action="{{ url_for('EditCourses') }}" >  
+     {% for row in rows %}  
+  <div class="col-sm-3 nopadding">
+  <div class="form-group">
+    <input type="text" class="form-control" id="CourseName" name="Semester" value="{{ row.semesters }}"" placeholder="Semester" style="width: 250px" >
+  </div> 
+</div>
+
+<div class="col-sm-3 nopadding">
+  <div class="form-group">
+    <input type="text" class="form-control" id="CourseName" name="CourseName" value="{{ row.courses}}" placeholder="CourseName" style="width: 250px">
+  
+  </div>
+</div>
+<div class="col-sm-3 nopadding">
+  <div class="form-group" style="width: 150px">
+    <input type="text" class="form-control" id="CourseName" name="educationDate" value="{{ row.grades }}" placeholder="CourseName" style="width: 250px">
+  
+  </div> 
+</div>
+
+ <select name="check_box" id="dropdown_list" onchange='Check(this.value);'>
+
+      <option>Select..</option>
+      <option>Delete</option> 
+
+    </select>
+ 
+</br>
+  </br>
+</br>
+{% endfor %}
+ </br>
+
+
+
+  <button class="btn btn-success" type="submit" style="margin-left: 17px">Save Changes</button>
+</form>  
+
+
+

@@ -1,17 +1,18 @@
+<!--Efnan Gülkanat-->
 <!DOCTYPE html>
 <html lang="en">
 <head>   
   <meta charset="utf-8" />   
-  <title>Chart.js </title>      
+  <title>What Will My Gpa Be? </title>      
   <script src='static/Chart.min.js'></script>
-  <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 </head>
 <body>
 
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="http://localhost:5000">Home Page</a>
-  <a class="nav-brand" href="http://localhost:5000">Back<span class="sr-only">(current)</span></a>
+  <a class="nav-brand" href="{{ url_for('KursRaporlamaHome') }}" >Back<span class="sr-only">(current)</span></a>
 </nav>
 </br>
 <select id="dropdown_list">
@@ -20,12 +21,20 @@
   <option>Bar</option>
 </select>
 
-<button class="btn btn-outline-success my-2 my-sm-0" onclick="myFunction()">Sign up</button>
-
-
-<h1 align="center">Elective or Main Course Success Rate</h1><!-- bar chart canvas element -->
+<button class="btn btn-outline-success my-2 my-sm-0" onclick="myFunction()">Change Report Type</button>
 </br>
-<div id="id1" style="visibility: hidden;">
+</br>
+
+<a href="{{ url_for('AddStudentData') }}">Change Data File</a>
+
+<h1 align="center">Dropout Rates by Years</h1><!-- bar chart canvas element -->
+<div id="id4" style="position:absolute;left: 48%;">
+<label for="demo" style="font-size: 1.2em;"><b>{{file}}</b></label>
+
+</div>
+
+</br>
+<div id="id1" >
   <canvas id="chart" width="600" height="400" style="position:absolute;left: 30%;"></canvas>
 </div>
 <div id="id2" style="visibility: hidden;">

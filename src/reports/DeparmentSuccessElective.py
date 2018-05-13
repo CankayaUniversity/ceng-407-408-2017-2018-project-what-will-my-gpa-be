@@ -2,9 +2,9 @@
 import csv
 import pandas as pd
 
-
-def getsuccess(course,elorm):
-    grades= pd.read_csv('grade2.csv')
+path="data/"
+def getsuccess(cName,elorm,filename):
+    grades = pd.read_csv(path+filename)
     grades.sort_values("Year", inplace=True)
     
     grades = grades.drop(grades[grades.Grade == 'S'].index) 
@@ -70,10 +70,18 @@ def getsuccess(course,elorm):
     return labels,values
       
 
+def get_suc_file(cName,elorm,filename):
+    if not filename:
+        filename="grade2.csv"
+        labels,values=getsuccess(cName,elorm,filename)
+        return labels,values
+    else:
+        labels,values=getsuccess(cName,elorm,filename)
+        return labels,values
 
 
 
-
+filename=[]
 cName = "CENG"
 elorm='E'
-labels,values=getsuccess(cName,elorm)
+labels,values=get_suc_file(cName,elorm,filename)

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>   
+  <meta charset="utf-8" />   
+  <title>What Will My Gpa Be?</title>      
+  <script src='static/Chart.min.js'></script>
+  <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="http://localhost:5000">Home Page</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <form class="form-inline my-2 my-lg-0">
+      <a class="nav-brand" href="http://localhost:5000">Back<span class="sr-only">(current)</span></a>
+    </form>
+  </div>
+</nav>
+</br>
+</br>
+</br>
+ <div class="row">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">GPA Predict</h5>
+        <p class="card-text">You can learn prediction of your future GPA </p>
+        <a href="{{ url_for('OgrencıGPA') }}" class="btn btn-outline-success my-2 my-sm-0">Go GPA Predict</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Predict Course Grade</h5>
+        <p class="card-text">You can learn your future course grade</p>
+        <a href="{{ url_for('OgrencıKurs') }}" class="btn btn-outline-success my-2 my-sm-0">Go Course Grade Predict</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+<div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Predict Critical Courses for GPA</h5>
+        <p class="card-text">You can learn courses which are most affect GPA</p>
+        <a a href="{{ url_for('KursOnemlı') }}" class="btn btn-outline-success my-2 my-sm-0">Go Critical Courses Predict</a>
+      </div>
+    </div>
+  </div>
+<div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">View Course Suggestion</h5>
+        <p class="card-text">You can view course suggestions with lecturer and emails.</p>
+        <a a href="{{ url_for('KursOnerı') }}" class="btn btn-outline-success my-2 my-sm-0">Go Suggestions</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<form method="post" enctype="multipart/form-data">
+ <div>
+   <label for="file">Choose file to upload</label>
+   <input type="file" id="file" name="file" multiple>
+ </div>
+ <div>
+   <button>Submit</button>
+ </div>
+</form>
+</body>
+</html>

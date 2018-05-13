@@ -1,11 +1,9 @@
-
 import csv
 import pandas as pd
 
-
-def get_semester_success(studID,course): 
-    dosya='grade2.csv'
-    grades= pd.read_csv(dosya)
+path="data/grade2.csv"
+def get_semester_success(studID,course,filename): 
+    grades= pd.read_csv(path)
     grades.sort_values("StudID", inplace=True)
 
 
@@ -72,9 +70,8 @@ def get_semester_success(studID,course):
     return semesters1,values1
       
 
-def get_semester_ıd(studID): 
-    dosya='grade2.csv'
-    grades= pd.read_csv(dosya)
+def get_semester_ıd(studID,filename): 
+    grades= pd.read_csv(path)
     grades.sort_values("StudID", inplace=True)
 
 
@@ -139,9 +136,26 @@ def get_semester_ıd(studID):
         
     return semesters,values
       
+def get_semester_file(studId,filename):
+    if not filename:
+        filename="grade2.csv"
+        semestersıd,valuesıd=get_semester_ıd(studID,filename)
+        return semestersıd,valuesıd
+    else:
+        semestersıd,valuesıd=get_semester_ıd(studID,filename)
+        return semestersıd,valuesıd
 
+def get_semester_sucfile(studID,course,filename):
+    if not filename:
+        filename="grade2.csv"
+        semesters,values=get_semester_success(studID,course,filename)
+        return semesters,values
+    else:
+        semesters,values=get_semester_success(studID,course,filename)
+        return semesters,values
 
 studID=219
 course='CENG'
-semesters,values=get_semester_success(studID,course)
-semestersıd,valuesıd=get_semester_ıd(studID)
+filename=[]
+semesters,values=get_semester_sucfile(studID,course,filename)
+semestersıd,valuesıd=get_semester_file(studID,filename)

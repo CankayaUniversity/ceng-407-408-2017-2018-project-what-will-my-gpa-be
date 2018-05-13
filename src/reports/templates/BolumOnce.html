@@ -2,9 +2,9 @@
 <html lang="en">
 <head>   
   <meta charset="utf-8" />   
-  <title>Chart.js </title>      
+  <title>What Will My Gpa Be? </title>      
   <script src='static/Chart.min.js'></script>
-  <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 </head>
 <body>
  <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -15,33 +15,186 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <form class="form-inline my-2 my-lg-0">
-      <a class="nav-brand" href="http://localhost:5000">Back<span class="sr-only">(current)</span></a>
+      <a class="nav-brand" href="{{ url_for('DepartmentHomePage') }}">Back<span class="sr-only">(current)</span></a>
     </form>
   </div>
 </nav>
 </br>
 
- <form method="GET" action="{{ url_for('Bolum') }}">
+ <form method="GET" action="{{ url_for('BolumOnce') }}">
   <div class="form-group">
     <label for="exampleFormControlSelect1">Select course </label>
-            <select name="comp" class="selectpicker form-control" class="form-control" id="exampleFormControlSelect1">
+            <select name="comp" class="selectpicker form-control" class="form-control" id="exampleFormControlSelect1" style="width: 250px;">
               {% for item in courses %}
               <option value="{{ item }}">{{ item }}</option>
               {% endfor %}
             </select>
+</br>
     <div class="input-group-append">
-      <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Button</button>
+      <button type="submit" class="btn btn-outline-success my-2 my-sm-0">See Reports</button>
     </div>
   </div>
-
-
-
-
-
-
-
-
 </form>
-</body>
 
+
+<select id="dropdown_list">
+  <option>Line</option>
+  <option>Graph</option>
+  <option>Bar</option>
+</select>
+
+<button class="btn btn-outline-success my-2 my-sm-0" onclick="myFunction()">Sign up</button>
+
+</br>
+</br>
+
+<a href="{{ url_for('AddData') }}">Change Data File</a>
+
+<h1 align="center">Department success rates by years</h1><!-- bar chart canvas element -->
+</br>
+<div id="id4" style="position:absolute;left: 48%;">
+<label for="demo" style="font-size: 1.2em;"><b>{{select}}-{{file}}</b></label>
+</br>
+</br>
+</div>
+</br>
+<div id="id1">
+  <canvas id="chart" width="600" height="400" style="position:absolute;left: 30%;"></canvas>
+</div>
+<div id="id2" style="visibility: hidden;">
+<canvas id="line" width="600" height="400" style="position:absolute;left: 30%;"></canvas>
+</div>
+<div id="id3" style="visibility: hidden;">
+<canvas id="bar" width="600" height="400" style="position:absolute;left: 30%;" ></canvas>
+ </div>
+
+
+
+ <script>
+   // bar chart data
+   var barData = {
+   labels : [{% for item in labels %}
+                  "{{item}}",
+              {% endfor %}],
+   datasets : [
+      {
+
+            fillColor: "rgba(151,187,205,0.2)",
+            strokeColor: "rgba(151,187,205,1)",
+            pointColor: "rgba(151,187,205,1)",
+         data : [{% for item in values %}
+                      {{item}},
+                    {% endfor %}]
+      }
+      ]
+   }
+ 
+   // get bar chart canvas
+   var mychart = document.getElementById("chart").getContext("2d");
+ 
+   steps = 4
+   max = 4
+   // draw bar chart
+   new Chart(mychart).Bar(barData, {
+        scaleOverride: true,
+        scaleSteps: steps,
+        scaleStepWidth: Math.ceil(max / steps),
+        scaleStartValue: 0,
+        scaleShowVerticalLines: true,
+        scaleShowGridLines : true,
+        barShowStroke : true,
+        scaleShowLabels: true
+   });
+   // barchartdata
+   var barData = {
+   labels : [{% for item in labels %}
+                  "{{item}}",
+              {% endfor %}],
+   datasets : [
+      {
+            fillColor: "rgba(151,187,205,0.2)",
+            strokeColor: "rgba(151,187,205,1)",
+            pointColor: "rgba(151,187,205,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(151,187,205,1)",
+            bezierCurve : false,
+            data : [{% for item in values %}
+                      {{item}},
+                    {% endfor %}]
+      }]
+   }
+ 
+    Chart.defaults.global.animationSteps = 50;
+    Chart.defaults.global.tooltipYPadding = 16;
+    Chart.defaults.global.tooltipCornerRadius = 0;
+    Chart.defaults.global.tooltipTitleFontStyle = "normal";
+    Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
+    Chart.defaults.global.animationEasing = "easeOutBounce";
+    Chart.defaults.global.responsive = false;
+    Chart.defaults.global.scaleLineColor = "black";
+    Chart.defaults.global.scaleFontSize = 16;
+ 
+   // get bar chart canvas
+   var mychart = document.getElementById("line").getContext("2d");
+ 
+   steps = 4
+   max = 4
+   // draw bar chart
+   var LineChartDemo = new Chart(mychart).Line(barData, {
+        scaleOverride: true,
+        scaleSteps: steps,
+        scaleStepWidth: Math.ceil(max / steps),
+        scaleStartValue: 0,
+        scaleShowVerticalLines: true,
+        scaleShowGridLines : true,
+        barShowStroke : true,
+        scaleShowLabels: true,
+        bezierCurve: false,
+ 
+   });
+   var pieData = [
+            {% for item,label,colors in set %}
+                {
+                    value: {{item}},
+                    label: "{{label}}",
+                    color : "{{colors}}"
+                },
+                {% endfor %}
+ 
+ 
+         ];
+ 
+   // get bar chart canvas
+   var mychart = document.getElementById("bar").getContext("2d");
+ 
+   steps = 10
+   max = 10
+   // draw pie chart
+   new Chart(document.getElementById("bar").getContext("2d")).Pie(pieData);
+
+   function myFunction() {
+    var select=document.getElementById("dropdown_list");
+    var x = document.getElementById("id1");
+    var y= document.getElementById("id2");
+    var z=document.getElementById("id3");
+    if (select[select.selectedIndex].value=="Line") {
+        x.style.visibility='hidden';
+        y.style.visibility='visible';
+        z.style.visibility='hidden';
+    } 
+    else if(select[select.selectedIndex].value=="Graph") {
+         x.style.visibility='visible';
+         y.style.visibility='hidden';
+         z.style.visibility='hidden';
+    }
+    else if(select[select.selectedIndex].value=="Bar")
+    {
+        x.style.visibility='hidden';
+        y.style.visibility='hidden';
+        z.style.visibility='visible';
+    }
+}
+</script>
+</body>
   </html>
