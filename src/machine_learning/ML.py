@@ -12,18 +12,17 @@ kf = KFold(n_splits=10, shuffle=True)
 def logistic_regression(x,y,p):
 
     ##Default parameters
-    default_parameters=[0.001,1.0,'lbfgs',100] ##Parameters with order: Tolerance, C, solver, maximum iteration 
+    default_parameters=[0.001,'lbfgs',100] ##Parameters with order: Tolerance, solver, maximum iteration 
 
     ##set custom parameters
     for i in range(len(p)):
-        if p[i]!=None:
+        if p[i]!="":
             default_parameters[i] = p[i]
     
     ##create model
     model = linear_model.LogisticRegression(tol = default_parameters[0],
-                                            C = default_parameters[1],
-                                            solver=default_parameters[2],
-                                            max_iter=default_parameters[3])
+                                            solver=default_parameters[1],
+                                            max_iter=default_parameters[2])
     
     ##Train and test
     accuracy = [model.fit(x[train], y[train]).score(x[test],y[test]) for train, test in kf.split(x)]
@@ -37,8 +36,17 @@ def logistic_regression(x,y,p):
     return model, info, default_parameters
 
 def linear_regression(x,y,p):
+
+        ##Default parameters
+    default_parameters=[True,False] ##Parameters with order: Tolerance, solver, maximum iteration 
+
+    ##set custom parameters
+    for i in range(len(p)):
+        if p[i]!="":
+            default_parameters[i] = p[i]
     ##create model
-    model = linear_model.LinearRegression()
+    model = linear_model.LinearRegression(fit_intercept=default_parameters[0],
+                                            normalize=default_parameters[1])
 
     model.fit(x,y)
 
@@ -46,26 +54,22 @@ def linear_regression(x,y,p):
     print("Loss: %.2f" % mean_squared_error(y, model.predict(x)))
 
     info=['%.2f'%model.score(x,y),'%.2f'%mean_squared_error(y, model.predict(x))]
-
     
-    
-    return model, info
+    return model, info, default_parameters
 
 def svm(x,y,p):
 
     ##Default parameters
-    default_parameters=[True,0.001,1.0,1000] ##Parameters with order: Dual, Tolerance, C, maximum iteration
+    default_parameters=[0.001,1000] ##Parameters with order: Tolerance, maximum iteration
 
     ##set custom parameters
     for i in range(len(p)):
-        if p[i]!=None:
+        if p[i]!="":
             default_parameters[i] = p[i]
     
     ##create model
-    model = LinearSVC(dual = default_parameters[0],
-                      tol = default_parameters[1],
-                      C = default_parameters[2],
-                      max_iter = default_parameters[3])
+    model = LinearSVC(tol = default_parameters[0],
+                      max_iter = default_parameters[1])
     
     ##Train and test
     accuracy = [model.fit(x[train], y[train]).score(x[test],y[test]) for train, test in kf.split(x)]
@@ -79,13 +83,13 @@ def svm(x,y,p):
     return model, info, default_parameters
 
 def mlp(x,y,p):
-
+    print(p[0])
     ##Default parameters
     default_parameters=[(100,),'relu','adam',0.0001,'auto',0.001,200,0.0001] ##Parameters with order: hidden layer sizes, activation, solver, alpha, batch_size, learning rate, maximum iteration, tolerance
 
     ##set custom parameters
     for i in range(len(p)):
-        if p[i]!=None:
+        if p[i]!="":
             default_parameters[i] = p[i]
             
     ##create model
