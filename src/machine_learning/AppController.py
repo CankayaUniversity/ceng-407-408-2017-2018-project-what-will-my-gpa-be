@@ -11,7 +11,7 @@ class AppController:
         self.courses={}
 
         ## get number of models form database for save more model
-        db = MySQLdb.connect("localhost","root","123456","gpa_db_4" )
+        db = MySQLdb.connect("localhost","root","1234","ceng408" )
         cursor = db.cursor()
         query = "SELECT * from models"
         cursor.execute(query)
@@ -30,34 +30,40 @@ class AppController:
                     FROM models \
                     WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("default_grade.csv","default_student.csv","gpa",1)
         
-        if self.total_rows != 0:
+        if self.total_rows > 3:
             ## load default models
             try:
                 cursor.execute(q_dropout)
                 path = cursor.fetchone()
                 self.dropout = joblib.load(path[0])
-
+            except IOError as e:
+                print("Model file doesn't exist.")
+            try:
                 cursor.execute(q_study_length)
                 path = cursor.fetchone()
                 self.study_length = joblib.load(path[0])
-
+            except IOError as e:
+                print("Model file doesn't exist.")
+            try:
                 cursor.execute(q_gpa)
                 path = cursor.fetchone()
                 self.gpa = joblib.load(path[0])
-
+            except IOError as e:
+                print("Model file doesn't exist.")
+            try:
                 cursor.execute(q_course)
                 paths = cursor.fetchall()
                 for path in paths:
                     self.courses[path[1]] = joblib.load(path[0])
             except IOError as e:
-                print("One of the model file doesn't exist.")
+                print("Model file doesn't exist.")
  
 
         db.close()
 
     def update_default_models(self):
         ## get number of models form database for save more model
-        db = MySQLdb.connect("localhost","root","123456","gpa_db_4" )
+        db = MySQLdb.connect("localhost","root","1234","ceng408" )
         cursor = db.cursor()
         query = "SELECT * from models"
         cursor.execute(query)
@@ -238,7 +244,7 @@ class AppController:
         fname=""
 
         ##connection to db
-        db = MySQLdb.connect("localhost","root","123456","gpa_db_4" )
+        db = MySQLdb.connect("localhost","root","1234","ceng408" )
         cursor = db.cursor()
         
         if prediction_function == 'course_grade':
