@@ -1,2 +1,14 @@
 # ceng-407-408-project-what-will-my-gpa-be
-ceng-407-408-project-what-will-my-gpa-be created by GitHub Classroom
+Dependencies
+-MySQL
+
+SQL import:
+mysql -u mysql_user -p DATABASE < backup.sql
+
+Run
+cd (path)/Desktop
+cd GPA
+cd myflaskapp
+python app.py
+
+
