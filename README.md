@@ -1,11 +1,14 @@
 # ceng-407-408-project-what-will-my-gpa-be
-Dependencies
+
+DEPENDENCIES
+
 -MySQL
 
 SQL import:
+
 mysql -u mysql_user -p DATABASE < backup.sql
 
-Run
+RUN
 
 cd (path)/Desktop
 
