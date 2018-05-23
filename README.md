@@ -6,9 +6,13 @@ SQL import:
 mysql -u mysql_user -p DATABASE < backup.sql
 
 Run
+
 cd (path)/Desktop
+
 cd GPA
+
 cd myflaskapp
+
 python app.py
 
 
