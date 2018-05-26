@@ -38,7 +38,7 @@ We will describe how to install and compile the Student Performance Evaluation S
   * cd myflaskapp
   * python app.py
  
-
+After running project, you can connect your localhost.
 
 
 
