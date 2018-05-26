@@ -19,7 +19,7 @@ We will describe how to install and compile the Student Performance Evaluation S
 * MySql should be installed and import to our dump file to your MySql;
 	* mysql -u mysql_user -p DATABASE < Dump20180513.sql
 
-* After installing Anaconda, you should install new Python libraries to your device;
+* After installing Anaconda, you should install new Python libraries to your device.(These codes should be written in a Anaconda Prompt.All of these libraries are required, if they are not installed then you get some compilation errors.);
 	* pip install numpy
 	* pip install sklearn
 	* pip install pandas
@@ -29,7 +29,7 @@ We will describe how to install and compile the Student Performance Evaluation S
   * pip install functools
   * pip install flask_mysqldb
   * pip install passlib.hash
-*These codes should be written in a Anaconda Prompt.All of these libraries are required, if they are not installed then you get some compilation errors. 
+
 
 ## **Compiling and Running**
 * For running;
