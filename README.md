@@ -19,7 +19,7 @@ We will describe how to install and compile the Student Performance Evaluation S
 * MySql should be installed and import to our dump file to your MySql;
 	* mysql -u mysql_user -p DATABASE < Dump20180513.sql
 
-* After installing Anaconda, you should install new Python libraries to your device.(These codes should be written in a Anaconda Prompt.All of these libraries are required, if they are not installed then you get some compilation errors.);
+* After installing Anaconda, you should install new Python libraries to your device.(These codes should be written in a Anaconda Prompt. All of these libraries are required, if they are not installed then you get some compilation errors.)
 	* pip install numpy
 	* pip install sklearn
 	* pip install pandas
@@ -34,14 +34,7 @@ We will describe how to install and compile the Student Performance Evaluation S
 ## **Compiling and Running**
 * For running;
 	* cd (path)/Desktop
-  * cd GPA
-  * cd myflaskapp
+  * cd GPA/myflaskapp
   * python app.py
  
-After running project, you can connect your localhost.
-
-
-
-
-
-
+After running project, you can access to program via [localhost](http://localhost/5000) or just type localhost/5000.
