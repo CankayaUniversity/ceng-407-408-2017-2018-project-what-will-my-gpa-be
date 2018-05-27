@@ -18,6 +18,8 @@ We will describe how to install and compile the Student Performance Evaluation S
 * Anaconda for Windows/ IOS should be installed.
 * MySql should be installed and import to our dump file to your MySql;
 	* mysql -u mysql_user -p DATABASE < Dump20180513.sql
+	
+* After dumping mysql, you should change mysql username and password in dbinfo.py. This file is in the [GPA.rar](https://github.com/CankayaUniversity/ceng-407-408-project-what-will-my-gpa-be/releases) file.
 
 * After installing Anaconda, you should install new Python libraries to your device.(These codes should be written in a Anaconda Prompt. All of these libraries are required, if they are not installed then you get some compilation errors.)
 	* pip install numpy
