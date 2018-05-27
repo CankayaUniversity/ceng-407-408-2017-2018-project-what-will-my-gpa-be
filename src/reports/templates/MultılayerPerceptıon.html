@@ -27,18 +27,21 @@
   <div class="input-group-prepend">
     <span class="input-group-text" id="inputGroup-sizing-default">Number of neurons</span>
   </div>
-  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;">
+  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;" placeholder="1-1000, Integer" required>
+  <label><i>Number of neurons in a layer. NOTE: This part is necessary.</i></label>
 </div>
 <div class="input-group mb-3">
   <div class="input-group-prepend">
-    <span class="input-group-text" id="inputGroup-sizing-default">Hidden Layer sizes</span>
+    <span class="input-group-text" id="inputGroup-sizing-default" >Hidden Layer sizes</span>
   </div>
-  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;">
+  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;" placeholder="1-1000, Integer" required>
+  <label><i>Number of layers in neural network.  NOTE: This part is necessary.</i></label>
 </div>
 
 <div class="input-group mb-3">
   <div class="input-group-prepend">
     <span class="input-group-text" id="inputGroup-sizing-default">Activation</span>
+
   </div>
   <select name="ıteratıon" id="dropdown_list">
 
@@ -47,6 +50,7 @@
       <option>tanh</option>
 
     </select>
+    <label><i>Activation function for the hidden layer</i></label>
 </div>
 
 <div class="input-group mb-3">
@@ -60,13 +64,15 @@
       <option>adam</option>
 
     </select>
+    <label style="margin-left:10px"><i> Algorithm for optimization. </i></label>
 </div>
 
 <div class="input-group mb-3">
   <div class="input-group-prepend">
     <span class="input-group-text" id="inputGroup-sizing-default">Alpha</span>
   </div>
-  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;">
+  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;"  placeholder="0-1, Float">
+  <label><i>Regularization parameter</i></label>
 </div>
 
 
@@ -74,7 +80,8 @@
   <div class="input-group-prepend">
     <span class="input-group-text" id="inputGroup-sizing-default">Batch Size</span>
   </div>
-  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;">
+  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;" placeholder="1-200, Integer">
+  <label><i>Size of minibatches for stochastic optimizers.</i></label>
 </div>
 
 
@@ -82,21 +89,25 @@
   <div class="input-group-prepend">
     <span class="input-group-text" id="inputGroup-sizing-default">Learning Rate</span>
   </div>
-  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;">
+  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;" placeholder="0-1, Float">
+  <label><i>The initial learning rate used. It controls the step-size in updating the weights. Only used when solver=’sgd’ or ‘adam’.</i></label>
 </div>
 
 <div class="input-group mb-3">
   <div class="input-group-prepend">
     <span class="input-group-text" id="inputGroup-sizing-default">Iteration</span>
   </div>
-  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;">
+  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;" placeholder="0-10000 (eg: 100), Integer">
+   <label><i>Maximum number of iterations taken for the solvers to converge. NOTE: More number of iteration, more wait time you get</i></label>
 </div>
 
 <div class="input-group mb-3">
   <div class="input-group-prepend">
     <span class="input-group-text" id="inputGroup-sizing-default">Tolerance</span>
   </div>
-  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;">
+  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;" placeholder="0-1 (eg: 0.01), Float">
+     <label><i>Tolerance for stopping criteria.</i></label>
+
 </div>
 
 <div class="input-group mb-3">
@@ -104,7 +115,7 @@
     <span class="input-group-text" id="inputGroup-sizing-default">Prediction Name</span>
   </div>
    <select name="predict_function" id="dropdown_list" onchange='Check(this.value);'>
-
+      <option>Select..</option>
       <option>Dropout for a Student</option>
       <option>Course Grade Prediction</option> 
 
@@ -142,7 +153,7 @@
    <button type="submit" name="clicked" class="btn btn-outline-success my-2 my-sm-0" value="CreateModel">Create Model</button>
    
    {% if 'button' in temp2 %}
-<button type="submit" name="clicked" class="btn btn-outline-success my-2 my-sm-0" value="SaveModel" enabled> Save Model</button>
+<button type="submit" name="clicked" class="btn btn-outline-success my-2 my-sm-0" value="SaveModel" enabled onclick="myFunction()"> Save Model</button>
   {% else %}
     <button type="submit" name="clicked" class="btn btn-outline-success my-2 my-sm-0" value="SaveModel" disabled> Save Model</button>
 {% endif %}
@@ -185,7 +196,9 @@ function Check(val){
  else  
    y.style.visibility='hidden';
 }
-
+function myFunction() {
+  alert("Saved database succesfully...!!");
+}
 </script> 
 
 </body>

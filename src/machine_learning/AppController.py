@@ -3,6 +3,7 @@ from Tables import *
 import MySQLdb, ML
 import pandas as pd
 import numpy as np
+from dbinfo import *
 
 
 class AppController:
@@ -11,7 +12,7 @@ class AppController:
         self.courses={}
 
         ## get number of models form database for save more model
-        db = MySQLdb.connect("localhost","root","1234","ceng408" )
+        db = MySQLdb.connect("localhost",mysl_user,password,"gpa_db_4" )
         cursor = db.cursor()
         query = "SELECT * from models"
         cursor.execute(query)
@@ -19,16 +20,16 @@ class AppController:
         
         q_dropout = "SELECT path \
                     FROM models \
-                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("default_grade.csv","default_student.csv","dropout",1)
+                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("grade2.csv","student.csv","dropout",1)
         q_study_length = "SELECT path \
                         FROM models \
-                        WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("default_grade.csv","default_student.csv","study_length",1)
+                        WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("grade2.csv","student.csv","study_length",1)
         q_course = "SELECT path,course \
                     FROM models \
-                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("default_grade.csv","default_student.csv","course_grade",1)
+                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("grade2.csv","student.csv","course_grade",1)
         q_gpa =     "SELECT path\
                     FROM models \
-                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("default_grade.csv","default_student.csv","gpa",1)
+                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("grade2.csv","student.csv","gpa",1)
         
         if self.total_rows > 3:
             ## load default models
@@ -58,12 +59,11 @@ class AppController:
             except IOError as e:
                 print("Model file doesn't exist.")
  
-
         db.close()
 
     def update_default_models(self):
         ## get number of models form database for save more model
-        db = MySQLdb.connect("localhost","root","1234","ceng408" )
+        db = MySQLdb.connect("localhost",mysl_user,password,"gpa_db_4" )
         cursor = db.cursor()
         query = "SELECT * from models"
         cursor.execute(query)
@@ -125,69 +125,85 @@ class AppController:
 
     ## prediction functions
     def predict_course_grade(self,vector,course_list,pcourse_name):
-        model = joblib.load("models/course_"+pcourse_name+"_model")
+        tb = Tables()
+        tb.read_data("grade2.csv", "student.csv")
+        if (pcourse_name not in tb.courseList):
+            return (pcourse_name+" is not available anymore")
+
+        model=None
+        q_course = "SELECT path \
+                    FROM models \
+                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND course='%s' AND isDefault='%d'" % ("grade2.csv","student.csv","course_grade",pcourse_name,1)
+        
+        db = MySQLdb.connect("localhost",mysql_user,password,"gpa_db_4" )
+        cursor = db.cursor()
+        try:
+            cursor.execute(q_course)
+            path = cursor.fetchone()
+            model = joblib.load(path[0])
+        except IOError as e:
+            print("Model file doesn't exist.")
+ 
+        db.close()
+
+        if model==None:
+            return ("There is no available model file for" + pcourse_name)
+        
         vector=self.courses_to_numeric(vector,True) ##convert course grades to numeric ones(eg. AA=4, CB = 2.5)
-        lst = np.empty(courseTable.shape[1])
+        lst = np.empty(tb.courseTable.shape[1])
         lst[:] = np.nan
         for i in range(len(course_list)):
-            lst[courseList.index(course_list[i])] = vector[i]
+            if course_list[i] in tb.courseList:
+                lst[tb.courseList.index(course_list[i])] = vector[i]
         lst = lst.reshape(1,-1)
-        lst = course_imp.transform(lst)
+        lst = tb.course_imp.transform(lst)
 
-        class_index = courseList.index(pcourse_name)
+        class_index = tb.courseList.index(pcourse_name)
         lst = np.delete(lst,class_index,1) ## remove class column from input data
         result = model.predict(lst)
         result = self.courses_to_numeric(result,False)
         return result[0]
 
     def predict_dropout(self,vector,course_list):
+        tb = Tables()
+        tb.read_data("grade2.csv", "student.csv")
         vector=self.courses_to_numeric(vector,True)
-        lst = np.empty(dropoutTable.shape[1])
+        lst = np.empty(tb.dropoutTable.shape[1])
         lst[:] = np.nan
         for i in range(len(course_list)):
-            lst[courseList.index(course_list[i])] = vector[i]
+            if course_list[i] in tb.courseList:
+                lst[tb.courseList.index(course_list[i])] = vector[i]
         lst = lst.reshape(1,-1)
-        lst = dropout_imp.transform(lst)
+        lst = tb.dropout_imp.transform(lst)
         result = self.dropout.predict(lst)
         if result[0] == 1: return True
         else:   return False
 
-    def predict_gpa(self,vector,course_list,semester):
+    def predict_gpa(self,vector,course_list):
+        tb = Tables()
+        tb.read_data("grade2.csv", "student.csv")
         vector=self.courses_to_numeric(vector,True)
-        lst = np.empty(graduationTable.shape[1])
+        lst = np.empty(tb.graduationTable.shape[1])
         lst[:] = np.nan
         for i in range(len(course_list)):
-            lst[courseList.index(course_list[i])] = vector[i]
+            if course_list[i] in tb.courseList:
+                lst[tb.courseList.index(course_list[i])] = vector[i]
         lst = lst.reshape(1,-1)
-        lst = graduation_imp.transform(lst)
-        
-        if semester=='0':
-            return self.gpa[0].predict(vector)
-        elif semester=='1':
-            return self.gpa[1].predict(vector)
-        elif semester=='2':
-            return self.gpa[2].predict(vector)
-        elif semester=='3':
-            return self.gpa[3].predict(vector)
-        elif semester=='4':
-            return self.gpa[4].predict(vector)
-        elif semester=='5':
-            return self.gpa[5].predict(vector)
-        elif semester=='6':
-            return self.gpa[6].predict(vector)
-        elif semester=='graduation':
-            result = self.graduation.predict(lst)
-            if result<0: result=result*-1
-            return "%.2f"%result
+        lst = tb.graduation_imp.transform(lst)
+
+        result = self.gpa.predict(lst)
+        if result<0: result=result*-1
+        return "%.2f"%result
          
     def predict_length(self,vector,course_list):
         tb = Tables()
-        tb.read_data("default_grade.csv", "default_student.csv")
+        tb.read_data("grade2.csv", "student.csv")
         vector=self.courses_to_numeric(vector,True)
         lst = np.empty(tb.studyTable.shape[1])
         lst[:] = np.nan
         for i in range(len(course_list)):
-            lst[tb.courseList.index(course_list[i])] = vector[i]
+            if course_list[i] in tb.courseList:
+                lst[tb.courseList.index(course_list[i])] = vector[i]
         lst = lst.reshape(1,-1)
         lst = tb.study_imp.transform(lst)
         result = self.study_length.predict(lst)
@@ -244,7 +260,7 @@ class AppController:
         fname=""
 
         ##connection to db
-        db = MySQLdb.connect("localhost","root","1234","ceng408" )
+        db = MySQLdb.connect("localhost",mysl_user,password,"gpa_db_4" )
         cursor = db.cursor()
         
         if prediction_function == 'course_grade':

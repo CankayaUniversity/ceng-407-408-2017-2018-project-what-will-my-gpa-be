@@ -34,6 +34,8 @@
       <option>false</option>
 
     </select>
+      <label><i>Whether to calculate the intercept for this model.</i></label>
+
 </div>
 
 <div class="input-group mb-3">
@@ -46,6 +48,8 @@
       <option>false</option>
 
     </select>
+      <label><i>Normalize training data before regression.</i></label>
+
 </div>
 
 
@@ -55,7 +59,7 @@
     <span class="input-group-text" id="inputGroup-sizing-default">Prediction Name</span>
   </div>
   <select name="prediction_function" id="dropdown_list" onchange='Check(this.value);'>
-
+      <option>Select..</option>
       <option>Length of Study Prediction</option>
       <option>GPA Prediction</option> 
 
@@ -99,8 +103,13 @@
 
 </br>
   <button type="submit" name="clicked" class="btn btn-outline-success my-2 my-sm-0" value="CreateModel">Create Model</button>
-  <button type="submit" name="clicked" class="btn btn-outline-success my-2 my-sm-0" value="SaveModel"> Save Model</button>
-  <input type="checkbox" name="check_box" value="Default">Default<br>
+   
+   {% if 'button' in temp2 %}
+<button type="submit" name="clicked" class="btn btn-outline-success my-2 my-sm-0" value="SaveModel" enabled onclick="myFunction()"> Save Model</button>
+  {% else %}
+    <button type="submit" name="clicked" class="btn btn-outline-success my-2 my-sm-0" value="SaveModel" disabled> Save Model</button>
+{% endif %}
+<input type="checkbox" name="check_box" value="Default">Save as default
    </br>
   <label for="demo" style="font-size: 1.2em;">Fıt Intercept:{{parameters[0]}}</label>
   </br>
@@ -123,7 +132,9 @@ function Check(val){
  else  
    y.style.visibility='hidden';
 }
-
+function myFunction() {
+  alert("Saved database succesfully...!!");
+}
 </script> 
 
 </body>

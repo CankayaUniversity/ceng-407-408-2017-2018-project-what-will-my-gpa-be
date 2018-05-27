@@ -32,7 +32,7 @@ from DepartmentSuccess import *
 from GraduateMaleFemaleSuccess import *
 from LeaveSuccessRate import *
 from werkzeug.utils import secure_filename
-
+from dbinfo import *
 
 app = Flask(__name__)
 colors = [ "#F7464A", "#46BFBD", "#FDB45C", "#FEDCBA","#ABCDEF", "#DDDDDD", "#ABCABC"  ]
@@ -42,17 +42,17 @@ parameters=None
 info=None
 # Config MySQL
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '123456'
-UPLOAD_FOLDER = 'C:/Users/DAŞDEMİR/Desktop/yedekwebsite/myflaskapp/data'
-UPLOAD_FOLDER_STUDENT = 'C:/Users/DAŞDEMİR/Desktop/yedekwebsite/myflaskapp/datastudent'
+app.config['MYSQL_USER'] = mysl_user
+app.config['MYSQL_PASSWORD'] = password
+UPLOAD_FOLDER="data/"
+UPLOAD_FOLDER_STUDENT ="datastudent/"
 ALLOWED_EXTENSIONS = set(['csv'])
 #app.config['MYSQL_DB'] = 'gpa_db_3'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['UPLOAD_FOLDER_STUDENT'] = UPLOAD_FOLDER_STUDENT
 db_name_deneme = "gpa_db_4"
-sql_filename = "C:/Users/DAŞDEMİR/Documents/dumps/Dump20180504.sql"
+#sql_filename = "C:/Users/DAŞDEMİR/Documents/dumps/Dump20180504.sql"
 # init MYSQL
 rector_mail = "gpapredict.123@gmail.com"
 mysql = MySQL(app)
@@ -76,10 +76,18 @@ mail = Mail(app)
 # Index
 @app.route('/')
 def index():
-    #if session["logged_in"] == True:
-        
-        #redirect_login(session['data'])
     cur = mysql.connection.cursor()
+    #if(session['logged_in'] == True):
+        #data=session['data1']
+        #return redirect_login(data)     
+
+
+
+
+        
+
+        #redirect_login(session['data1'])
+    
     #process = Popen(['mysql.exe', db_name_deneme, '-u', "root", '-p', "abc123"],
                 #stdout=PIPE, stdin=PIPE)
     #output = process.communicate('source ' + sql_filename)[0]
@@ -155,8 +163,10 @@ def make_tree(path):
                 tree['children'].append(dict(name=name))
     return tree
 
-path = os.path.expanduser('C:/Users/DAŞDEMİR/Desktop/yedekwebsite/myflaskapp/data')
-pathsstudent = os.path.expanduser('C:/Users/DAŞDEMİR/Desktop/yedekwebsite/myflaskapp/datastudent')
+path="data/"
+pathsstudent="datastudent/"
+#path = os.path.expanduser('C:/Users/DAŞDEMİR/Desktop/GPA/myflaskapp/data')
+#pathsstudent = os.path.expanduser('C:/Users/DAŞDEMİR/Desktop/GPA/myflaskapp/datastudent')
 
 @app.route('/MezunKizErkek', methods=['GET', 'POST'])
 def MezunKizErkek():
@@ -388,7 +398,7 @@ def OgrencıDonemOnce():
         filenew=b[count]  
     
     file=session['file']
-    print(select)
+    #print(select)
     if not (select is None):
         if(file is None and filenew is None):
             
@@ -604,64 +614,51 @@ def SeeCourses():
 def OgrencıGPA():
     user_id=session['user_id']
     cur = mysql.connection.cursor()
-    result1 = cur.execute("SELECT * FROM gpas WHERE user_id = %s", [user_id])
+    result1 = cur.execute("SELECT * FROM gpas WHERE user_id = %s AND isDeleted = %s ", ([user_id], 0))
     rows=[]
+    grades=[]
+    courses=[]
+    num=[]
     if result1 > 0:
         data1=cur.fetchall()
-        #print(data1)
         index=0
         rows=[]
-        as_dict=[]
-        as_dict1=[]
-        as_dict2=[]
         for i in range(len(data1)):
             row = dict(semesters=data1[index]["semester"],grades=data1[index]["grade"],courses=data1[index]["coursename"])
             rows.append(row)
-            #as_dict2.append(data1[index]["semester"])
-            as_dict1.append(data1[index]["coursename"])
-            as_dict.append(data1[index]["grade"])
+            grades.append(data1[index]["grade"])
+            courses.append(data1[index]["coursename"])
             index += 1
-    #as_dict = request.args.getlist('educationDate')
-    #as_dict1 = request.args.getlist('CourseName')
-    #as_dict2= request.args.getlist('Semester')
-    semester=request.args.get('Semester')
-    print(as_dict)
-    print(as_dict1)
-    print(as_dict2)
 
-    #num=a.predict_gpa(as_dict,as_dict1,semester)
+    num=a.predict_gpa(grades,courses)
     #print(num)
-    num=[]
     return render_template('OgrencıGPA.html',num=num,rows=rows)
 
 @app.route("/OgrencıKurs", methods=['GET', 'POST'])
 def OgrencıKurs():
     user_id=session['user_id']
     cur = mysql.connection.cursor()
-    result1 = cur.execute("SELECT * FROM gpas WHERE user_id = %s", [user_id])
+    result1 = cur.execute("SELECT * FROM gpas WHERE user_id = %s AND isDeleted = %s ", ([user_id], 0))
     rows=[]
-    num=[]
+    num="Result: "
+    grades=[]
+    courses=[]
     if result1 > 0:
+     
         data1=cur.fetchall()
         index=0
         rows=[]
-        as_dict=[]
-        as_dict1=[]
-        as_dict2=[]
         for i in range(len(data1)):
             row = dict(semesters=data1[index]["semester"],grades=data1[index]["grade"],courses=data1[index]["coursename"])
             rows.append(row)
-            #as_dict2.append(data1[index]["semester"])
-            as_dict1.append(data1[index]["coursename"])
-            as_dict.append(data1[index]["grade"])
+            grades.append(data1[index]["grade"])
+            courses.append(data1[index]["coursename"])
             index += 1
     as_dict2= request.args.get('Predict_name')
-    #print(as_dict)
-    #print(as_dict1)
-    #print(as_dict2)
-    if not (as_dict is None and as_dict1 is None and as_dict2 is None):
-        num=a.predict_course_grade(as_dict,as_dict1,(as_dict2))
-        #print(num)
+    name=request.args.get('clicked')
+    if(name=='Predict'):
+        num=num+a.predict_course_grade(grades,courses,as_dict2)
+    print(as_dict2)
     return render_template('OgrencıKurs.html',num=num,rows=rows)
 
 @app.route("/CoursesPage", methods=['GET', 'POST'])
@@ -723,7 +720,7 @@ def CoursesPage():
     
     mysql.connection.commit()
    
-    return render_template('CoursesPage.html',rows=rows)
+    return render_template('CoursesPage.html')
 
         
 
@@ -752,25 +749,21 @@ def LogıstıcRegressıon():
         courses=course_list(filenew) 
 
     algorithm="logistic"
-    predict_f=[]
-    global model,info,parameters
+    
+    global model,info,parameters,predict_f
     temp1=[]
     temp2=[]
     select=None
     predict_function=request.args.get('prediction_function')
-
-    if(predict_function=='Course Grade Prediction'):
-        predict_f="course_grade"
-    elif(predict_function=='Dropout for a Student'):
-        temp1="course"
-        predict_f="dropout"
+    if(predict_function!='Select..'):
+        if(predict_function=='Course Grade Prediction'):
+            temp1="course"
+            predict_f="course_grade"
+        elif(predict_function=='Dropout for a Student'):
+            temp1="c"
+            predict_f="dropout"
     coursename=request.args.get('course')
-
-    if(coursename=='Select..'):
-        temp1="c"
-        select = request.args.getlist('ıteratıon')
-    else:
-        select = request.args.getlist('ıteratıon')
+    select = request.args.getlist('ıteratıon')
     check_box=request.args.get('check_box')
     if(name=='CreateModel'):
         temp2="button"
@@ -779,6 +772,7 @@ def LogıstıcRegressıon():
         if(select[2] != ""):
             select[2]=int(select[2])
         if(predict_f=="course_grade"):
+            session['coursename']=coursename
             model,info,parameters=a.create_new_model(file_curr,file_curr_student,predict_f, algorithm, select, coursename.lower(), None)        
         else:
             model,info,parameters=a.create_new_model(file_curr,file_curr_student,predict_f, algorithm, select, None, None)
@@ -786,16 +780,14 @@ def LogıstıcRegressıon():
     
     elif(name=='SaveModel'):
         temp2="s"
-        
-        print(check_box)
+        isdef=1
         if check_box==None:
-            print( "sssssssssssssssssssssssssssssssss")
             isdef=0
-            a.save_model(file_curr,file_curr_student,predict_f, algorithm, select,info,model,isdef,None,None)
-        elif check_box=='Default':
-            print("dddddddddddddddddddddddddddddddddd")
-            isdef=1
-            a.save_model(file_curr,file_curr_student,predict_f, algorithm, select,info,model,isdef,None,None)
+        if(predict_f=="course_grade"):
+            coursename=session['coursename']
+            a.save_model(file_curr,file_curr_student,predict_f, algorithm, parameters,info,model,isdef,coursename.lower(),None)    
+        else:
+            a.save_model(file_curr,file_curr_student,predict_f, algorithm, parameters,info,model,isdef,None,None)
   
     
     return render_template('LogıstıcRegressıon.html',courses=courses,tree=make_tree(path),tree1=make_tree(pathsstudent),parameters=[],info=[],temp=coursename,temp1=temp1,temp2=temp2)
@@ -819,25 +811,20 @@ def MultılayerPerceptıon():
         courses=course_list(filenew) 
    
     algorithm="mlp"
-    predict_f=[]
-    global model,info,parameters
+    global model,info,parameters,predict_f
     select=None
     temp2=[]
     predict_function=request.args.get('predict_function')
-    if(predict_function=='Course Grade Prediction'):
-        predict_f="course_grade"
-    elif(predict_function=='Dropout for a Student'):
-        temp1="course"
-        predict_f="dropout"
+    if(predict_function!='Select..'):
+        if(predict_function=='Course Grade Prediction'):
+            temp1="course"
+            predict_f="course_grade"
+        elif(predict_function=='Dropout for a Student'):
+            temp1="c"
+            predict_f="dropout"
     coursename=request.args.get('course')
- 
-    if(coursename=='Select..'):
-        temp1="c"
-        select = request.args.getlist('ıteratıon')
-    else:
-        select = request.args.getlist('ıteratıon')
+    select = request.args.getlist('ıteratıon')
     name=[]
-
     name=request.args.get('clicked')
     if(name=='CreateModel'): 
         temp2="button" 
@@ -862,17 +849,21 @@ def MultılayerPerceptıon():
         if(select[7] != ""):
             select[7]=float(select[7]) 
         if(predict_f=="course_grade"):
+            session['coursename']=coursename
             model,info,parameters=a.create_new_model(file_curr,file_curr_student,predict_f, algorithm, select, coursename.lower(), None)       
         else:  
             model,info,parameters=a.create_new_model(file_curr,file_curr_student,predict_f, algorithm, select, None, None)
         return render_template('MultılayerPerceptıon.html',courses=courses,tree=make_tree(path),tree1=make_tree(pathsstudent),parameters=parameters,info=info,temp=coursename,temp1=temp1,temp2=temp2)
     elif(name=='SaveModel'):
         temp2="s"
-        isdef=0
-        if check_box=='Default':
-            isdef=1
-        if model!=None:
-            a.save_model(file_curr,file_curr_student,predict_f, algorithm, select,info,model,isdef,None,None)          
+        isdef=1
+        if check_box==None:
+            isdef=0
+        if(predict_f=="course_grade"):
+            coursename=session['coursename']
+            a.save_model(file_curr,file_curr_student,predict_f, algorithm, parameters,info,model,isdef,coursename.lower(),None)    
+        else:
+            a.save_model(file_curr,file_curr_student,predict_f, algorithm, parameters,info,model,isdef,None,None)          
     return render_template('MultılayerPerceptıon.html',courses=courses,tree=make_tree(path),tree1=make_tree(pathsstudent),parameters=[],info=[],temp=coursename,temp1=temp1,temp2=temp2)
  
 
@@ -884,7 +875,6 @@ def SupportVectorMachıne():
     file_curr_student= request.args.get('dropdown_list1')
     file=session['file']
     courses=[]
-    global model,info,parameters
     if ((file_curr_student==None  or file_curr_student=='Seçiniz..') and(file_curr==None or file_curr=='Seçiniz..') ):
         file_curr_student="student.csv"
         file_curr="grade2.csv"
@@ -896,33 +886,26 @@ def SupportVectorMachıne():
     name=request.args.get('clicked')
     algorithm="svm"
     predict_function=request.args.get('prediction_function')
-    predict_f=[]
-    parameters=[]
-    info=[]
     temp1=[]
     temp2=[]
+    global model,info,parameters,predict_f
     coursename=request.args.get('course')
-    if(predict_function=='Course Grade Prediction'):
-        predict_f="course_grade"
-    elif(predict_function=='Dropout for a Student'):
-        temp1="course"
-        predict_f="dropout"
-        
-    if(coursename=='Select..'):
-        temp1="c"
-        select = request.args.getlist('ıteratıon')
-    else:
-        select = request.args.getlist('ıteratıon')
-
-
+    if(predict_function!='Select..'):
+        if(predict_function=='Course Grade Prediction'):
+            temp1="course"
+            predict_f="course_grade"
+        elif(predict_function=='Dropout for a Student'):
+            temp1="c"
+            predict_f="dropout" 
+    select = request.args.getlist('ıteratıon')
     if(name=='CreateModel'):
         temp2="button"
         if(select[0]!= ""):
             select[0]=float(select[0])
         if(select[1] != ""):
             select[1]=int(select[1])
-
         if(predict_f=="course_grade"):
+            session['coursename']=coursename
             model,info,parameters=a.create_new_model(file_curr,file_curr_student,predict_f, algorithm, select, coursename.lower(), None)       
         else:  
             model,info,parameters=a.create_new_model(file_curr,file_curr_student,predict_f, algorithm, select, None, None)
@@ -930,17 +913,17 @@ def SupportVectorMachıne():
 
     elif(name=='SaveModel'):
         temp2="s"
-        isdef=0
-        if check_box=='Default':
-            isdef=1
-        if model!=None:
-            a.save_model(file_curr,file_curr_student,predict_f, algorithm, select,info,model,isdef,None,None)
+        isdef=1
+        if check_box==None:
+            isdef=0
+        if(predict_f=="course_grade"):
+            coursename=session['coursename']
+            a.save_model(file_curr,file_curr_student,predict_f, algorithm, parameters,info,model,isdef,coursename.lower(),None)    
+        else:
+            a.save_model(file_curr,file_curr_student,predict_f, algorithm, parameters,info,model,isdef,None,None)
     
 
     return render_template('SupportVectorMachıne.html',courses=courses,tree=make_tree(path),tree1=make_tree(pathsstudent),parameters=[],info=[],temp=coursename,temp1=temp1,temp2=temp2)
-
-
-
 
 
 @app.route('/LınearRegressıon')
@@ -954,7 +937,7 @@ def LınearRegressıon():
     file=session['file']
     courses=[]
     temp2=[]
-    global model,info,parameters
+    global model,info,parameters,predict_f
     if ((file_curr_student==None  or file_curr_student=='Seçiniz..') and(file_curr==None or file_curr=='Seçiniz..') ):
         file_curr_student="student.csv"
         file_curr="grade2.csv"
@@ -963,19 +946,17 @@ def LınearRegressıon():
         filenew = file_curr        
         courses=course_list(filenew)
     predict_function=request.args.get('prediction_function')
-    predict_f=[]
-    if(predict_function=='GPA Prediction'):
-        predict_f="gpa"
-    elif(predict_function=='Length of Study Prediction'):
-        predict_f="study_length"
+    if(predict_function!='Select..'):
+        if(predict_function=='GPA Prediction'):
+            predict_f="gpa"
+        elif(predict_function=='Length of Study Prediction'):
+            predict_f="study_length"
     coursename=request.args.get('course')
     if(coursename=='Select..'):
         temp1="c"
         select = request.args.getlist('ıteratıon')
     else:
         select = request.args.getlist('ıteratıon')
-    parameters=[]
-    info=[]
     name=request.args.get('clicked')
     if(name=='CreateModel'):
         temp2="button"
@@ -988,7 +969,8 @@ def LınearRegressıon():
         if check_box=='Default':
             isdef=1
         if model!=None:
-            a.save_model(file_curr,file_curr_student,predict_f, algorithm, select, info, model ,isdef, None, None)
+            print(info)
+            a.save_model(file_curr,file_curr_student,predict_f, algorithm, parameters, info, model ,isdef, None, None)
     return render_template('LınearRegressıon.html',courses=courses,tree=make_tree(path),tree1=make_tree(pathsstudent),parameters=[],info=[],temp=coursename,temp1=temp1,temp2=temp2)
      
 
@@ -1083,7 +1065,6 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
-
 # User login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -1092,7 +1073,7 @@ def login():
         username = request.form['username']
         password_candidate = request.form['password']
         
-
+      
 
         # Create cursor
         cur = mysql.connection.cursor()
@@ -1115,6 +1096,7 @@ def login():
             if sha256_crypt.verify(password_candidate, password):
                 # Passed
                 session['username'] = username
+                #session['data1']=data
                 session['user_id']=data['user_id']
                 return redirect_login(data)                
 
@@ -1168,6 +1150,7 @@ def OgrencıHomePage():
     return render_template('OgrencıHomePage.html')  
 
 
+
 @app.route('/RaporHomepage', methods=['GET', 'POST'])
 def RaporHomepage():
     
@@ -1202,12 +1185,31 @@ def LengthPrediction():
 
 @app.route('/CriticalDropout', methods=['GET', 'POST'])
 def CriticalDropout():
-    as_dict = request.args.getlist('educationDate')
-    as_dict1 = request.args.getlist('CourseName')
-    print(as_dict)
-    print(as_dict1)
-    num=a.predict_dropout(as_dict,as_dict1)
-    return render_template('CriticalDropout.html',num=num) 
+    user_id=session['user_id']
+    cur = mysql.connection.cursor()
+    result1 = cur.execute("SELECT * FROM gpas WHERE user_id = %s AND isDeleted = %s ", ([user_id], 0))
+    rows=[]
+    num=[]
+    grades=[]
+    courses=[]
+    if result1 > 0:
+        data1=cur.fetchall()
+        index=0
+        rows=[]
+        for i in range(len(data1)):
+            row = dict(semesters=data1[index]["semester"],grades=data1[index]["grade"],courses=data1[index]["coursename"])
+            rows.append(row)
+            grades.append(data1[index]["grade"])
+            courses.append(data1[index]["coursename"])
+            index += 1
+
+    num=a.predict_dropout(grades,courses)
+    #print(num)
+    if(num==False):
+        num="You will not leave."
+    else:
+        num="Yes, probably you will leave."
+    return render_template('CriticalDropout.html',num=num,rows=rows) 
 
 
 @app.route('/OgrencıPredıctıons', methods=['GET', 'POST'])
@@ -1221,29 +1223,27 @@ def OgrencıPredıctıons():
 def OgrencıLength():
     user_id=session['user_id']
     cur = mysql.connection.cursor()
-    result1 = cur.execute("SELECT * FROM gpas WHERE user_id = %s", [user_id])
+    result1 = cur.execute("SELECT * FROM gpas WHERE user_id = %s AND isDeleted = %s ", ([user_id], 0))
     rows=[]
     num=[]
+    grades=[]
+    courses=[]
     if result1 > 0:
+     
         data1=cur.fetchall()
-        #print(data1)
         index=0
         rows=[]
-        as_dict=[]
-        as_dict1=[]
-        as_dict2=[]
         for i in range(len(data1)):
             row = dict(semesters=data1[index]["semester"],grades=data1[index]["grade"],courses=data1[index]["coursename"])
             rows.append(row)
-            #as_dict2.append(data1[index]["semester"])
-            as_dict1.append(data1[index]["coursename"])
-            as_dict.append(data1[index]["grade"])
+            grades.append(data1[index]["grade"])
+            courses.append(data1[index]["coursename"])
             index += 1
 
 
-    num=a.predict_length(as_dict,as_dict1)
-    print(num)
-    return render_template('OgrencıLength.html',num=num,rows=rows)
+    num=a.predict_length(grades,courses)
+    #print(num)
+    return render_template('OgrencıLength.html',num=int(num),rows=rows)
 
 
 
@@ -1256,21 +1256,18 @@ def logout():
 
 def redirect_login(data):
     session['logged_in'] = True
+
  
     if(data['user_type']==3):
-
+        session['ogrencı_logged']=True
         flash('You are now logged in', 'success')
         return redirect(url_for('OgrencıHomePage'))
         #return render_template('OgrencıHomePage.html')
     elif(data['user_type']==0 or data['user_type']== 1 or data['user_type']==2 or data['user_type']==4):
-
+        session['ogrencı_logged']=False
         flash('You are now logged in', 'success')
-        return redirect(url_for('HeadHomepage'))
-        #return render_template('HeadHomepage.html')
-   # elif(data['user_type']==4):
 
-        #flash('You are now logged in', 'success')
-        #return render_template('ProfessorHomepage.html')
+        return redirect(url_for('HeadHomepage'))
 
 
 def run_cmd(cur, cmd, err_msg):

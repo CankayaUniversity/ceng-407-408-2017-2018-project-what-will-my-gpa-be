@@ -27,25 +27,6 @@
 <form method="GET" action="{{ url_for('CoursesPage') }}" onsubmit = "return refresh_table();"  id="frm1" >  
 
 
-<table class="table table-striped" style="width: 500px" id = "tbl_0" >
-  <thead>
-    <tr>
-      <th scope="col">Semester</th>
-      <th scope="col">Course Name</th>
-      <th scope="col">Grade</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for row in rows %}
-    <tr>
-        <td> {{ row.semesters }} </td>
-        <td> {{ row.courses}}</td>
-        <td> {{ row.grades }}</td>
-    </tr>
-{% endfor %}
-  </tbody>
-</table>
-
 
 
   <div id="education_fields">
@@ -97,15 +78,11 @@
  
   </div>
 </br>
-  <button class="btn btn-success" type="submit" style="margin-left: 17px">Add New Lessons </button>
+  <button class="btn btn-success" type="submit" style="margin-left: 17px" onclick="myFunction()">Add New Lessons </button>
 </br>
 </form>
 </br>
 
-
-<div id="predıct">
-  
-</div>
 
 <script>
 var room = 1;
@@ -144,7 +121,9 @@ function refresh_table() {
    return true;
 
 }   
-
+function myFunction() {
+  alert("Saved database succesfully...!!");
+}
 
 
 

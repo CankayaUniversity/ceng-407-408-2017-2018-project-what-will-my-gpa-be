@@ -18,7 +18,7 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <form class="form-inline my-2 my-lg-0">
-      <a class="nav-brand" href="javascript:history.go(-1)">Back<span class="sr-only">(current)</span></a>
+      <a class="nav-brand" href="http://localhost:5000/HeadHomepage">Back<span class="sr-only">(current)</span></a>
     </form>
   </div>
 </nav>
@@ -38,7 +38,7 @@
 {%- endfor %}
 </ul>
 <!--action="javascript:location.href=document.referrer"-->
-
+<label style="margin-left:10px;">Select Data</label>
 <select  name="dropdown_list" class="selectpicker form-control" class="form-control" id="exampleFormControlSelect1" style="width: 250px;">
   <option>Seçiniz..</option>
 {%- for item in tree.children recursive %}
@@ -53,7 +53,7 @@
     var select=document.getElementById("exampleFormControlSelect1");
     var value=select[select.selectedIndex].value
     var queryString = "?dropdown_list=" + value;
-    var x = document.referrer;
+    var x = "http://localhost:5000/HeadHomepage";
     window.location.href = x + queryString;
   }
 </script> 

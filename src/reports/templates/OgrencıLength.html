@@ -22,7 +22,7 @@
       </div>
     </nav>
 
-<form method="GET" action="{{ url_for('OgrencıLength') }}">  
+
   <table class="table table-striped" style="width: 500px">
   <thead>
     <tr>
@@ -42,18 +42,22 @@
   </tbody>
 </table>
 </br>
-  <button class="btn btn-success" type="submit" style="margin-left: 17px">See Prediction </button>
-  </br>
-  <label for="demo" style="font-size: 1.2em;margin-left: 17px"><b>Prediction of Length of Study Result:{{num}}</b></label>
-</form>
+  <button class="btn btn-success" type="submit" style="margin-left: 17px" onclick="myFunction()">Predict</button>
+
+  <div id="id1" style="visibility: hidden;">
+  <label for="demo" id="id1" style="font-size: 1.2em;margin-left: 17px"><br><b>Predicted Length of Study: {{num}} semester</b></label>
+  </div>
+
 
 </div>
 
+<script>
+function myFunction() {
+    var x = document.getElementById("id1");
+    x.style.visibility='visible';
+} 
 
-
-
-
-
+</script>
  
   
 

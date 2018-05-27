@@ -27,7 +27,8 @@
   <div class="input-group-prepend">
     <span class="input-group-text" id="inputGroup-sizing-default">Tolerance</span>
   </div>
-  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;">
+  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;" placeholder="0-1 (eg: 0.01), Float">
+  <label style="margin-left:10px"><i> Tolerance for stopping criteria. </i></label>
 </div>
 <div class="input-group mb-3">
   <div class="input-group-prepend">
@@ -40,12 +41,14 @@
       <option>saga</option>
 
     </select>
+    <label style="margin-left:10px"><i> Algorithm for optimization. </i></label>
 </div>
 <div class="input-group mb-3">
   <div class="input-group-prepend">
     <span class="input-group-text" id="inputGroup-sizing-default">Iteration</span>
   </div>
-  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;">
+  <input type="text" name="ıteratıon" aria-describedby="basic-addon2" style="width: 250px;" placeholder="0-10000 (eg: 100), Integer">
+  <label style="margin-left:10px"><i> Maximum number of iterations taken for the solvers to converge. NOTE: More number of iteration, more wait time you get </i></label>
 </div>
 
 
@@ -54,7 +57,7 @@
     <span class="input-group-text" id="inputGroup-sizing-default">Prediction Name</span>
   </div>
   <select name="prediction_function" id="dropdown_list" onchange='Check(this.value);'>
-
+      <option>Select..</option>
       <option>Dropout for a Student</option>
       <option>Course Grade Prediction</option> 
 
@@ -92,7 +95,7 @@
   <button type="submit" name="clicked" class="btn btn-outline-success my-2 my-sm-0" value="CreateModel">Create Model</button>
    
    {% if 'button' in temp2 %}
-<button type="submit" name="clicked" class="btn btn-outline-success my-2 my-sm-0" value="SaveModel" enabled> Save Model</button>
+<button type="submit" name="clicked" class="btn btn-outline-success my-2 my-sm-0" value="SaveModel" enabled onclick="myFunction()" > Save Model</button>
   {% else %}
     <button type="submit" name="clicked" class="btn btn-outline-success my-2 my-sm-0" value="SaveModel" disabled> Save Model</button>
 {% endif %}
@@ -106,7 +109,7 @@
   <label for="demo" style="font-size: 1.2em;">Iteration:{{parameters[2]}}</label>
    </br>
   {% if 'course' in temp1 %}
-     <label for="demo" style="font-size: 1.2em;">CourseName:{{temp}}</label></br>
+     <label for="demo" name="ad" style="font-size: 1.2em;">CourseName:{{temp}}</label></br>
 {% endif %}
 
   <label for="demo" style="font-size: 1.2em;">Accuracy:{{info[0]}}</label>
@@ -122,6 +125,9 @@ function Check(val){
   y.style.visibility='visible';
  else  
    y.style.visibility='hidden';
+}
+function myFunction() {
+  alert("Saved database succesfully...!!");
 }
 
 </script> 
