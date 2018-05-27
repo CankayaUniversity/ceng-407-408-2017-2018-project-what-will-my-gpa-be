@@ -62,6 +62,8 @@ class AppController:
         db.close()
 
     def update_default_models(self):
+          self.courses={}
+
         ## get number of models form database for save more model
         db = MySQLdb.connect("localhost",mysl_user,password,"gpa_db_4" )
         cursor = db.cursor()
@@ -71,40 +73,45 @@ class AppController:
         
         q_dropout = "SELECT path \
                     FROM models \
-                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("default_grade.csv","default_student.csv","dropout",1)
+                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("grade2.csv","student.csv","dropout",1)
         q_study_length = "SELECT path \
                         FROM models \
-                        WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("default_grade.csv","default_student.csv","study_length",1)
+                        WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("grade2.csv","student.csv","study_length",1)
         q_course = "SELECT path,course \
                     FROM models \
-                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("default_grade.csv","default_student.csv","course_grade",1)
-        q_gpa = "SELECT path \
+                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("grade2.csv","student.csv","course_grade",1)
+        q_gpa =     "SELECT path\
                     FROM models \
-                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("default_grade.csv","default_student.csv","gpa",1)
-
-        if self.total_rows != 0:
+                    WHERE gradeFile='%s' AND studentFile='%s' AND function='%s' AND isDefault='%d'" % ("grade2.csv","student.csv","gpa",1)
+        
+        if self.total_rows > 3:
             ## load default models
             try:
                 cursor.execute(q_dropout)
                 path = cursor.fetchone()
                 self.dropout = joblib.load(path[0])
-
+            except IOError as e:
+                print("Model file doesn't exist.")
+            try:
                 cursor.execute(q_study_length)
                 path = cursor.fetchone()
                 self.study_length = joblib.load(path[0])
-
+            except IOError as e:
+                print("Model file doesn't exist.")
+            try:
                 cursor.execute(q_gpa)
                 path = cursor.fetchone()
                 self.gpa = joblib.load(path[0])
-
+            except IOError as e:
+                print("Model file doesn't exist.")
+            try:
                 cursor.execute(q_course)
                 paths = cursor.fetchall()
                 for path in paths:
                     self.courses[path[1]] = joblib.load(path[0])
-
             except IOError as e:
-                print("One of the model file doesn't exist.")
-
+                print("Model file doesn't exist.")
+ 
         db.close()
 
 
@@ -257,29 +264,30 @@ class AppController:
     def save_model(self,grade_file, student_file, prediction_function, algorithm_name, parameters, info, model, isDefault, course_name, semester):
         
         model_path = "models/"
-        fname=""
+        fname=prediction_function+"_"+algorithm_name+"_"+str(self.total_rows)
 
         ##connection to db
         db = MySQLdb.connect("localhost",mysl_user,password,"gpa_db_4" )
         cursor = db.cursor()
-        
-        if prediction_function == 'course_grade':
-            fname=prediction_function+"_"+algorithm_name+"_"+course_name.lower()+"_"+str(self.total_rows) ## for giving name to models
-            ## check default model for a course and change its isDefault
-            update_q = "UPDATE models \
-                        SET isDefault = 0 \
-                        WHERE function='%s' AND course='%s' AND isDefault = 1" % (prediction_function, course_name)
-        else:
-            fname=prediction_function+"_"+algorithm_name+"_"+str(self.total_rows) ## for giving name to models
-            ## check default model and change its isDefault
-            update_q = "UPDATE models \
-                        SET isDefault = 0 \
-                        WHERE function='%s' AND isDefault = 1" % (prediction_function)
-        try:
-            cursor.execute(update_q)
-            db.commit()
-        except :
-            db.rollback()
+
+        if isDefault==1:
+            if prediction_function == 'course_grade':
+                fname=prediction_function+"_"+algorithm_name+"_"+course_name.lower()+"_"+str(self.total_rows) ## for giving name to models
+                ## check default model for a course and change its isDefault
+                update_q = "UPDATE models \
+                            SET isDefault = 0 \
+                            WHERE function='%s' AND course='%s' AND isDefault = 1" % (prediction_function, course_name)
+            else:
+                fname=prediction_function+"_"+algorithm_name+"_"+str(self.total_rows) ## for giving name to models
+                ## check default model and change its isDefault
+                update_q = "UPDATE models \
+                            SET isDefault = 0 \
+                            WHERE function='%s' AND isDefault = 1" % (prediction_function)
+            try:
+                cursor.execute(update_q)
+                db.commit()
+            except :
+                db.rollback()
             
         
         ## save model and it's file to database
